@@ -1,0 +1,250 @@
+# <% const Exchange = Atlas.Config.DailyProductExchange; %>
+
+LanguageKeys:
+  <%= Atlas.LocKey('P2_TEXT') %>: Something else you wish to discuss?
+
+Dialog:
+  - Id: <%= Atlas.Dialog(`HOME`) %>
+    $TextAlien: Good day to you, Traveler. Do you have a delivery of <SPECIAL>Today's Favorite<>, or would you like to trade on the <TRADE>Ingredients Market<>?
+    TranslationBrackets: true
+    Options:
+      # <% Exchange.forEach((spec) => { %>
+      - $Name: Today's Favorite ~ <%= spec.Delivery.ProductName %>
+        NextInteraction: <%= Atlas.Dialog(`DV_${spec.Index}`) %>
+        MarkInteractionComplete: false
+        KeepOpen: true
+        EnablingConditionTest: AnyFalse
+        EnablingConditions:
+          - $: GcMissionConditionStatLevel
+            Stat: <%= Atlas.Mod.Stat('API') %>
+            Level: <%= spec.Index %>
+            Test: Equal
+      # <% }); %>
+
+      - Name: <%= Atlas.Mod.LocKey('MENU_ING_SHOP') %>
+        NextInteraction: <%= Atlas.Dialog('IM') %>
+        MarkInteractionComplete: false
+        KeepOpen: true
+
+      - Name: <%= Atlas.Mod.LocKey('MENU_NEXT_OPT') %>
+        NextInteraction: <%= Atlas.Dialog('PAGE2') %>
+        MarkInteractionComplete: false
+        KeepOpen: true
+
+      - Name: ALL_REQUEST_LEAVE
+        MarkInteractionComplete: false
+        KeepOpen: false
+        SelectedOnBackOut: true
+        Rewards:
+          - <%= Atlas.Mod.Reward('VISIT') %>
+
+  - Id: <%= Atlas.Dialog('PAGE2') %>
+    TextAlien: <%= Atlas.LocKey('P2_TEXT') %>
+    TranslationBrackets: true
+    Options:
+      - Name: <%= Atlas.Mod.LocKey('MENU_JUDGE_OPT') %>
+        Text: <%= Atlas.Mod.LocKey('MENU_JUDGE_RES') %>
+        IsAlien: true
+        Rewards:
+          - <%= Atlas.Mod.Reward('J_WAIT') %>
+          - <%= Atlas.Mod.Reward('VISIT') %>
+        MarkInteractionComplete: false
+        KeepOpen: false
+
+      # not finished dream aerial
+      - Name: <%= Atlas.LocKey('WHALE_OPT') %>
+        MarkInteractionComplete: false
+        KeepOpen: true
+        NextInteraction: <%= Atlas.Dialog('P2_ALT') %>
+        IsAlien: true
+        $Text:
+          - I do not think we are ready to discuss such matters, Traveler. Come and see me once you have woken from the <RARE>Dream<>.
+        EnablingConditionTest: AnyTrue
+        EnablingConditions:
+          - $: GcMissionConditionMissionCompleted
+            MissionID: BIO_FRIG
+          - $: GcMissionConditionStatLevel
+            Stat: <%= Atlas.Mod.Stat('WS_TUT') %>
+            Level: 1
+            Test: Equal
+
+      # first time
+      - Name: <%= Atlas.LocKey('WHALE_OPT') %>
+        MarkInteractionComplete: false
+        KeepOpen: true
+        NextInteraction: <%= Atlas.Dialog('WS_TUT1') %>
+        EnablingConditionTest: AnyFalse
+        EnablingConditions:
+          - $: GcMissionConditionMissionCompleted
+            MissionID: BIO_FRIG
+          - $: GcMissionConditionStatLevel
+            Stat: <%= Atlas.Mod.Stat('WS_TUT') %>
+            Level: 0
+            Test: Equal
+
+      # lost offering fix
+      - $Name: Replace lost offering
+        MarkInteractionComplete: false
+        KeepOpen: false
+        EnablingConditionTest: AnyFalse
+        EnablingConditions:
+          # - $: GcMissionConditionMissionCompleted
+          #   MissionID: BIO_FRIG
+          - $: GcMissionConditionStatLevel
+            Stat: <%= Atlas.Mod.Stat('WS_TUT') %>
+            Level: 1
+            Test: Equal
+          - $: GcMissionConditionIsMissionInProgress
+            MissionID: <%= Atlas.Config.MissionRef.FirstOffering %>
+          - $: GcMissionConditionGroup
+            ConditionTest: AnyTrue
+            Conditions:
+              - $: GcMissionConditionHasProduct
+                Product: <%= Atlas.Mod.Product("SONG") %>
+                ForceSearchFreighterAndChests: true
+                SearchEveryShip: true
+              - $: GcMissionConditionHasProduct
+                Product: <%= Atlas.Mod.Product("SONG_X") %>
+                ForceSearchFreighterAndChests: true
+                SearchEveryShip: true
+        Rewards:
+          - <%= Atlas.Mod.Reward('VISIT') %>
+          - Id: <%= Atlas.Reward('WS_FIX') %>
+            List:
+              - $: GcRewardSpecificProduct
+                ID: <%= Atlas.Mod.Product("SONG") %>
+                AmountMin: 1
+                AmountMax: 1
+                HideAmountInMessage: true
+                ForceSpecialMessage: false
+
+      # repeatable
+      - $Name: Forgotten Songs...
+        MarkInteractionComplete: false
+        KeepOpen: true
+        NextInteraction: <%= Atlas.Dialog('WS_BUY') %>
+        EnablingConditionTest: AnyFalse
+        EnablingConditions:
+          # - $: GcMissionConditionMissionCompleted
+          #   MissionID: BIO_FRIG
+          - $: GcMissionConditionStatLevel
+            Stat: <%= Atlas.Mod.Stat('WS_TUT') %>
+            Level: 1
+            Test: Equal
+          - $: GcMissionConditionGroup
+            ConditionTest: AnyTrue
+            Conditions:
+              - $: GcMissionConditionIsMissionInProgress
+                MissionID: <%= Atlas.Config.MissionRef.FirstOffering %>
+          # - $: GcMissionConditionMissionCompleted
+          #   MissionID: <%= Atlas.Config.MissionRef.FirstOffering %>
+
+      - Name: <%= Atlas.Mod.LocKey('MENU_BACK_OPT') %>
+        MarkInteractionComplete: false
+        KeepOpen: true
+        NextInteraction: <%= Atlas.Dialog(`HOME`) %>
+        SelectedOnBackOut: true
+
+  - Id: <%= Atlas.Dialog('P2_ALT') %>
+    TextAlien: <%= Atlas.LocKey('P2_TEXT') %>
+    TranslationBrackets: true
+    Options:
+      - Name: <%= Atlas.Mod.LocKey('MENU_JUDGE_OPT') %>
+        Text: <%= Atlas.Mod.LocKey('MENU_JUDGE_RES') %>
+        IsAlien: true
+        Rewards:
+          - <%= Atlas.Mod.Reward('J_WAIT') %>
+          - <%= Atlas.Mod.Reward('VISIT') %>
+        MarkInteractionComplete: false
+        KeepOpen: false
+
+      # not finished dream aerial jump start
+      - Name: <%= Atlas.LocKey('WHALE_OPT') %>
+        MarkInteractionComplete: false
+        KeepOpen: false
+        NextInteraction: <%= Atlas.Dialog('PAGE2') %>
+        IsAlien: true
+        $Text:
+          - Persistent, very well. The <SPECIAL>alchemist<> gave me this recipe, said I would know the right time to pass it along.
+          - A word of warning, however. Only Travelers with a <TECHNOLOGY>FREIGHTER<> will be able to unlock it's true potential.
+        EnablingConditionTest: AnyTrue
+        EnablingConditions:
+          - $: GcMissionConditionMissionCompleted
+            MissionID: BIO_FRIG
+        Rewards:
+          - R_WHALE_BEACON
+          - <%= Atlas.Mod.Reward('VISIT') %>
+
+      - Name: <%= Atlas.Mod.LocKey('MENU_BACK_OPT') %>
+        MarkInteractionComplete: false
+        KeepOpen: true
+        NextInteraction: <%= Atlas.Dialog(`HOME`) %>
+        SelectedOnBackOut: true
+
+  # <% Object.values(Exchange).forEach((spec) => { %>
+  - Id: <%= Atlas.Dialog(`DV_${spec.Index}`) %>
+    $TextAlien: Today I will pay <TRADE><%= spec.Delivery.NanitesPerUnit %><> nanites per unit of <SPECIAL><%= spec.Delivery.ProductName %><>. <%~ spec.Dialog.Anticipation %>
+    Options:
+      - Name: ALL_REQUEST_LEAVE
+        MarkInteractionComplete: false
+        KeepOpen: true
+        NextInteraction: <%= Atlas.Dialog(`DV_${spec.Index}`) %>
+        Cost:
+          Id: <%= Atlas.Cost(`DV_${spec.Index}A`) %>
+          DisplayCost: True
+          HideOptionAndDisplayCostOnly: true
+          Cost:
+            $: GcCostProduct
+            Id: <%= spec.Delivery.Product %>
+            Amount: 1
+        Rewards:
+          - Id: <%= Atlas.Reward(`DV_${spec.Index}A`) %>
+            List:
+              - $: GcRewardMoney
+                AmountMin: <%= Math.ceil(spec.Delivery.NanitesPerUnit * Atlas.Config.Reward.DeliveryMult) %>
+                Currency: Nanites
+
+      - Name: ALL_REQUEST_LEAVE
+        MarkInteractionComplete: false
+        KeepOpen: true
+        NextInteraction: <%= Atlas.Dialog(`DV_${spec.Index}`) %>
+        Cost:
+          Id: <%= Atlas.Cost(`DV_${spec.Index}B`) %>
+          DisplayCost: True
+          HideOptionAndDisplayCostOnly: true
+          Cost:
+            $: GcCostProduct
+            Id: <%= spec.Delivery.Product %>
+            Amount: 5
+        Rewards:
+          - Id: <%= Atlas.Reward(`DV_${spec.Index}B`) %>
+            List:
+              - $: GcRewardMoney
+                AmountMin: <%= Math.ceil(spec.Delivery.NanitesPerUnit * 5 * Atlas.Config.Reward.DeliveryMult) %>
+                Currency: Nanites
+
+      - Name: ALL_REQUEST_LEAVE
+        MarkInteractionComplete: false
+        KeepOpen: true
+        NextInteraction: <%= Atlas.Dialog(`DV_${spec.Index}`) %>
+        Cost:
+          Id: <%= Atlas.Cost(`DV_${spec.Index}C`) %>
+          DisplayCost: True
+          HideOptionAndDisplayCostOnly: true
+          Cost:
+            $: GcCostProduct
+            Id: <%= spec.Delivery.Product %>
+            Amount: 10
+        Rewards:
+          - Id: <%= Atlas.Reward(`DV_${spec.Index}C`) %>
+            List:
+              - $: GcRewardMoney
+                AmountMin: <%= Math.ceil(spec.Delivery.NanitesPerUnit * 10 * Atlas.Config.Reward.DeliveryMult) %>
+                Currency: Nanites
+
+      - Name: <%= Atlas.Mod.LocKey('MENU_BACK_OPT') %>
+        MarkInteractionComplete: false
+        KeepOpen: true
+        NextInteraction: <%= Atlas.Dialog(`HOME`) %>
+        SelectedOnBackOut: true
+  # <% }); %>

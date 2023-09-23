@@ -1,0 +1,145 @@
+# <% const foodNames = Atlas.Config.DailyProductExchange.map((rec) => `<FLORA>${rec.Delivery.ProductName}<>`); %>
+
+Dialog:
+  - Id: <%= Atlas.Dialog('HI') %>
+    $TextAlien:
+      - Traveler. Have we met before?
+    TranslationBrackets: true
+    Prop: None
+    Options:
+      - Name: <%= Atlas.Mod.LocKey('MENU_YES_OPT') %>
+        NextInteraction: <%= Atlas.Dialog('SYNC1') %>
+
+      - Name: <%= Atlas.Mod.LocKey('MENU_NO_OPT') %>
+        NextInteraction: <%= Atlas.Dialog('INTRO') %>
+        IsAlien: true
+        Mood: Confused
+        Prop: None
+        $Text:
+          - Hmm... Nada and Polo sometimes change things. Granted, it's usually for the better.
+          - And recently, an alchemist has been bringing in shipments of <FLORA>NipNip Buds<>.
+          - What a fascinating plant... Does wonders for my mood, terrible on my memory.
+          - Oh, right! Greetings and salutations Traveler!
+
+  - Id: <%= Atlas.Dialog('INTRO') %>
+    $TextAlien:
+      - I am the iteration known as Cronus. Trader in rare cuisine, professional food critic, and amateur whalesong tracker.
+    TranslationBrackets: true
+    Prop: IPad
+    Options:
+      - $Name: About rare cuisine...
+        NextInteraction: <%= Atlas.Dialog('INTRO') %>
+        IsAlien: true
+        Prop: HoloBlob
+        $Text:
+          - Whether it is <%~ foodNames[0] %> or <%~ foodNames[3] %>, I'm always looking to expand my portfolio.
+          - What I am looking to acquire changes from day to day, so be sure to stop by if you haven't been in the Nexus recently.
+          - I also coordinate the Ingredients Market for settlements in the region, if you have a moment to spare.
+          - Fair compensation and competitive prices for all your certified organic ingredient needs.
+
+      - $Name: About food critiques...
+        NextInteraction: <%= Atlas.Dialog('INTRO') %>
+        IsAlien: true
+        Mood: Negative
+        Prop: None
+        $Text:
+          - That is dangerous territory my friend! Many have brought their "finest" works before me, and most have not dared to again.
+          - Should you prepare something interesting I will offer you the same services, but know that the cost is my honest opinion.
+
+      - $Name: About whalesong...
+        NextInteraction: <%= Atlas.Dialog('INTRO') %>
+        IsAlien: true
+        Mood: VeryPositive
+        Prop: HoloSolarSystem
+        $Text:
+          - The galaxy outside this Nexus has recently experienced a migration of the most fascinating megafauna.
+          - Space-faring and warp capable! Furthermore, if the rumors are believed to be true, also highly intelligent.
+          - What do they eat? Do they prefer <%~ foodNames[1] %> or <%~ foodNames[2] %>? Or perhaps <%~ foodNames[4] %>!
+          - Pah. Enough speculation. Let us work together on other matters, then we can discuss this topic further.
+
+      - $Name: Continue
+        MarkInteractionComplete: true
+        IsAlien: true
+        Prop: Container
+        $Text:
+          - Before you go, take a <TECHNOLOGY>Nutrient Processor<> and construction plans. Consider it an investment.
+          - The galaxy out there isn't all hazardous rainstorms and murderous robots.
+          - There is also good food to be had, especially if you know how to prepare it properly!
+        Rewards:
+          - <%= Atlas.Reward('DONE') %>
+          - Id: <%= Atlas.Reward('SYNC0') %>
+            List:
+              # advance story
+              - $: GcRewardModifyStat
+                Stat: <%= Atlas.Mod.Stat('LORE') %>
+                Amount: <%= Atlas.Config.StoryProgress.PostIntro %>
+                ModifyType: Set
+
+  - Id: <%= Atlas.Dialog('SYNC1') %>
+    TranslationBrackets: true
+    Mood: Confused
+    Prop: IPad
+    $TextAlien:
+      - See, I thought so! You were going to bring me Diplo Eggs, or was it Custard Doughnuts?
+      - Or, perhaps it was something else entirely...
+      - Did I make for you an <SPECIAL>Offering of a Forgetten Song<>, a legendary dessert that can be used to communicate with migratory cosmic megafauna?
+    Options:
+      - Name: <%= Atlas.Mod.LocKey('MENU_YES_OPT') %>
+        NextInteraction: <%= Atlas.Dialog('SYNC2') %>
+        Rewards:
+          - Id: <%= Atlas.Reward('WSTUT') %>
+            List:
+              - $: GcRewardModifyStat
+                Stat: <%= Atlas.Mod.Stat('WS_TUT') %>
+                Amount: 1
+                ModifyType: Set
+              - $: GcRewardModifyStat
+                Stat: <%= Atlas.Mod.Stat('LORE') %>
+                Amount: <%= Atlas.Config.StoryProgress.WhalesongReturn %>
+                ModifyType: Set
+      - Name: <%= Atlas.Mod.LocKey('MENU_NO_OPT') %>
+        NextInteraction: <%= Atlas.Dialog('HI') %>
+        SelectedOnBackOut: true
+        $Text:
+          - Then perhaps we have not met before. Let us reconsider for a moment...
+        IsAlien: true
+        Mood: Negative
+
+  - Id: <%= Atlas.Dialog('SYNC2') %>
+    TranslationBrackets: true
+    Mood: Confused
+    Prop: Box
+    $TextAlien:
+      - And did I teach you the recipe for an <SPECIAL>Offering of a Forgotten Song<>?
+    Options:
+      - Name: <%= Atlas.Mod.LocKey('MENU_YES_OPT') %>
+        MarkInteractionComplete: true
+        KeepOpen: false
+        $Text:
+          - Well, in that case I thank you for your patronage! Give me just a moment to set up shop for today and we can continue our culinary journey.
+        IsAlien: true
+        Mood: VeryPositive
+        Prop: IPad
+        Rewards:
+          - <%= Atlas.Reward('DONE') %>
+          - Id: <%= Atlas.Reward('WS_REC') %>
+            List:
+              - $: GcRewardSpecificProductRecipe
+                ID: <%= Atlas.Mod.Product("SONG") %>
+
+              - $: GcRewardModifyStat
+                Stat: <%= Atlas.Mod.Stat('LORE') %>
+                Amount: <%= Atlas.Config.StoryProgress.WhalesongRecipe %>
+                ModifyType: Set
+
+      - Name: <%= Atlas.Mod.LocKey('MENU_NO_OPT') %>
+        MarkInteractionComplete: true
+        KeepOpen: false
+        SelectedOnBackOut: true
+        $Text:
+          - Something to look forward to, then! Give me just a moment to set up shop for today and we can continue our culinary journey.
+        IsAlien: true
+        Mood: Positive
+        Prop: IPad
+        Rewards:
+          - <%= Atlas.Reward('DONE') %>

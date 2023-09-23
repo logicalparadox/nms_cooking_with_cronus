@@ -1,0 +1,230 @@
+# <% const foodNames = Atlas.Config.DailyProductExchange.map((rec) => `<FLORA>${rec.Delivery.ProductName}<>`); %>
+
+StatDefinitions:
+  - Id: <%= Atlas.Mod.Stat('LORE') %>
+    DefaultValue:
+      IntValue: <%= Atlas.Config.StoryProgress.PreIntro %>
+
+StoryPages:
+  - $Category: Diplomats
+    $PageID: <%= Atlas.Mod.Metadata.Name %>
+    Stat: <%= Atlas.Mod.Stat('LORE') %>
+    $ID: Iteration Cronus
+    Entries:
+      # The intro quest
+      - $Title: First Encounter
+        $Entry: >-
+          <NEU_AVG>Upon approaching the entity, Cronus questions if we have met 
+          before, explaining...<>
+
+
+          "Hmm... Nada and Polo sometimes change things. Granted, it's usually for the
+          better. And recently, an alchemist has been bringing in shipments of<> 
+          <FLORA>NipNip Buds<>. What a fascinating plant... Does wonders for my 
+          mood, terrible on my memory."
+
+
+          <NEU_AVG>Their attention drifts for a moment, before snapping back to 
+          the conversation.<>
+
+
+          "Oh, right! Greetings and salutations Traveler! I am the iteration known 
+          as Cronus. Trader in rare cuisine, professional food critic, and 
+          amaetuer whalesong tracker."
+
+      - $Entry: >-
+          <NEU_AVG>When asked about rare cousine...<>
+
+
+          "Whether it's <%~ foodNames[0] %> or <%~ foodNames[3] %>, I'm always 
+          looking to expand my portfolio. What I am looking to acquire changes 
+          from day to day, so be sure to stop by if you haven't been in the Nexus 
+          recently.
+
+
+          I also coordinate the Ingredients Market for settlements in the region, 
+          if you have a moment to spare. Fair compensation and competitive prices 
+          for all your certified organic ingredient needs."
+
+
+          <NEU_AVG>You are sure you have heard this in a recent galactic broadcast.<>
+
+      - $Entry: >-
+          <NEU_AVG>When asked about food critiques...<>
+
+
+          "That is dangerous territory my friend! Many have brought their finest
+          works before me, and most have not dared to again.
+
+
+          Should you prepare something interesting I will offer you the same services, 
+          but know that the cost is my honest opinion."
+
+      - $Entry: >-
+          <NEU_AVG>When asked about whalesong...<>
+
+
+          "The galaxy outside this Nexus has recently experienced a migration of the
+          most fascinating megafauna. Space-faring and warp capable! Furthermore, 
+          if the rumors are believed to be true, also highly intelligent."
+
+
+          "What do they eat? Do they prefer <%~ foodNames[1] %> or <%~ foodNames[2] %>? 
+          Or perhaps <%~ foodNames[4] %>! Pah. Enough speculation. Let us work together 
+          on other matters, then we can discuss this topic further."
+
+      - $Entry: >-
+          "Before you go, take a <TECHNOLOGY>Nutrient Processor<> and 
+          construction plans. Consider it an investment."
+
+
+          "The galaxy out there isn't all hazardous rainstorms and murderous 
+          robots. There is also good food to be had, especially if you know how 
+          to prepare it properly!"
+
+      # The cooking scene
+      - $Title: The Offering
+        $Entry: >-
+          <NEU_AVG>When asked about whalesong...<>
+
+
+          "What fortuitus circumstances we find ourselves in. I theorize that 
+          within the wake of these cosmic beings are memories, lost even to them. 
+          If we could attune to these memories, it would capture the attention 
+          of a nearby migratory fleet."
+
+
+          "Now, a scientist would have you construct all sorts of instrumentation 
+          and devices. Discordant and cold things that would only alienate, not 
+          invite. These are living creatures and if we wish to make new friends, 
+          that is always best done over the finest of foods. I will prepare a 
+          dessert! One of such magnificence that it will sing of all that the 
+          stars have seen."
+
+
+          <NEU_AVG>Cronus stops in full crescendo and looks in the direction of 
+          the other Nexus denizens. Statisfied no others caught this moment of 
+          untethered excitement, Cronus continues in a whisper.<>
+
+
+          "And you, Traveler, will carry it beyond the Nexus to whomever comes 
+          seeking it's call. But you must promise to return and tell me what 
+          ecrets this galaxy has forgotten."
+
+
+          <NEU_AVG>You agree to this task.<>
+
+      - $Entry: >-
+          <NEU_AVG>The Chef's voice trails off as they pull seemingly random food 
+          items from crates scattered throughout the market stall. You try to make 
+          note of the recipe but Cronus never measures a single ingredient as they 
+          weave from one<> <TECHNOLOGY>Nutrient Processor<> <NEU_AVG>to the next.<>
+
+
+          <NEU_AVG>Finally, placed before you is a gently-baked<> <SPECIAL>meringue<>, 
+          <NEU_AVG>a bowl of<> <SPECIAL>custard<><NEU_AVG>, and small dish of<> 
+          <SPECIAL>jam<> <NEU_AVG>that changes color whenever you look away.<>
+
+
+          "The <TECHNOLOGY>Nutrient Processors<> would get this last part wrong."
+          <NEU_AVG>Cronus expains,<> "Each <SPECIAL>offering<> is different.
+          It wants to sing, and you must help it find it's voice."
+
+
+          <NEU_AVG>As Cronus sculpts the <><SPECIAL>offering's<> <NEU_AVG>final 
+          form, a hum begins to resonates from the dessert before you. The hum 
+          becomes a voice, then the voice becomes a chorus. Barely audible but 
+          always present.<> 
+
+
+          <VISOR>You wonder if you have you heard this song before.<>
+
+
+          "There you go, my friend! I can modestly say that it is one of my finest 
+          desserts yet.Now, if you would be so kind, it would like to 
+          <SPECIAL>harmonize<> with the stars."
+
+      - $Title: Forgotten Songs
+        $Entry: >-
+          <NEU_AVG>A colossal, glorious creature drifts by my starship, appearing to swim 
+          through the vacuum of space. A haze of stardust glitters around it. 
+          It is like nothing I have ever seen. Serenity and peace wash over me 
+          in the presence of this ancient creature. It feels profoundly familiar, 
+          as though we have always known each other.<>
+
+
+          <VISOR>"Traveller. In the infinity of fates, we have converged."<>"
+
+
+          <NEU_AVG>The whale-like creature opens its throat. A resonant lullaby sweeps 
+          over me, bathing my consciousness in waves of euphoria.<>
+
+
+          "Come, let us dream together. Who are you in this life?"
+
+
+          <NEU_AVG>Its melodic voice, simulated directly in my mind, feels 
+          natural and soothing. The creature's lullaby draws me onwards. My body 
+          is its body. I am swimming with weightless limbs, across an ocean of 
+          stars.<>
+
+
+          "Your warp to my weft, woven together in the cosmic tapestry. I am 
+          glad for this song you have brought me."
+
+      - $Entry: >-
+          <NEU_AVG>The song recedes, reality re-asserting itself.<>
+
+
+          "I have seen your fate intertwine with mine many times over, my friend. 
+          Should I join your freighter's fleet once again?"
+
+      # Unlocked after returning to cronus after the first encounter
+      - $Title: Remembered Dreams
+        $Entry: >-
+          "My friend! You walk as if you are in a daze. Is everything alright?"
+
+
+          <NEU_AVG>Cronus tilts their head inquisitively, then a smile forms across their broad face.
+          In this moment of recognition, their mood shifts to one of unreserved glee.<>
+
+
+          "The Sea of Stars will grant it's secrets to those who witness the harmony of songs.
+          But knowledge hoarded is knowledge lost. You must share your story.
+          Quickly now, before the dream fades away."
+
+      # The Encounter
+      - $Entry: >-
+          <NEU_AVG>I tell Cronus of the moment I opened up my mind to the<> <SPECIAL>Offering of a Forgotten Song<>.
+          <NEU_AVG>I explain the guidance of the Song as I adjusted my ship's trajectory to an unknown point in space.<>
+
+
+          <NEU_AVG>And I speak of the choir, not just from the offering, but from my entire ship as I engaged 
+          the <><TECHNOLOGY>Pulse Drive<> <NEU_AVG>to our destination.<>
+
+      # Cronus' thoughts of forgotten songs and galaxy secrets
+      - $Entry: >-
+          <NEU_AVG>I describe the majestic creature bathed in stardust that came to answer the call of harmony.
+          As I describe the experience, each moment of the dream returns to me.<>
+
+
+          <NEU_AVG>In this moment, I can still hear the <><VISOR>WHALESONG HARMONY<>.
+          <NEU_AVG>What was once a hazy dream manifests as tangible memories, my mind commiting them to permanence.<>
+
+
+          "...to share such a boon is remarkable!"
+
+
+          <NEU_AVG>Cronus smiles, realizing I only just returned to the conversation from the depths of my memories.<>
+
+
+          "There are many more <SPECIAL>Forgotten Songs<> the galaxy has yet to share with us. When you are ready I will help you find them.
+          Also, please accept this gift for a story well told."
+
+      # Learning the recipe
+      - $Title: The Sea of Stars
+        $Entry: >-
+          I have purchased the recipe for <SPECIAL>Offering of a Forgotten Song<>.
+
+
+          "I will miss the stories, but I cannot stand in the way of your discovery. Here you are my friend, please help the universe remember."

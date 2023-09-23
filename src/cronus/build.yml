@@ -1,0 +1,61 @@
+Build:
+  # first time you meet cronus - sync tutorial
+  - $: IncludeMission
+    Source: ./tutorial/mission.yml
+    Metadata:
+      Name: ALCH_CHEF_INTRO
+      ID: CHEFHI
+
+  # seperate tutorial detail message to avoid race conditions
+  - $: IncludeMission
+    Source: ./tutorial/detail_message.yml
+    Metadata:
+      Name: ALCH_CHEF_TDONE
+      ID: CHEFTUT
+
+  # daily market stats and rewards
+  - $: IncludeGeneric
+    Source: ./daily_market/globals.yml
+
+  # scheduled daily reset mission
+  - $: IncludeMission
+    Source: ./daily_market/daily_reset_controller.yml
+    Metadata:
+      Name: ALCH_CHEF_RESET
+      ID: CHEFXD
+
+  # dialog controller mission for cronus daily market feature
+  - $: IncludeMission
+    Source: ./daily_market/mission.yml
+    Metadata:
+      Name: CHEF_MENU_00
+      ID: ALCF
+
+  # judgement dialog rewrite to handle interacting with the daily menu
+  - $: IncludeGeneric
+    Source: ./judgement/globals.yml
+    Config:
+      JudgementFlow:
+        - Text: FTH_NEXUSCHEF_DESC_1
+          IsAlien: false
+          LeaveText: FTH_NEXUSCHEF_RES_NONE1
+          LeaveIsAlien: true
+        - Text: FTH_NEXUSCHEF_LANG_1
+          IsAlien: true
+          LeaveText: FTH_NEXUSCHEF_DESC_1
+          LeaveIsAlien: false
+        - Text: FTH_NEXUSCHEF_LANG_2
+          IsAlien: true
+          LeaveText: ''
+          LeaveIsAlien: false
+
+  # controller handles toggling daily market so judgement can happen unhindered
+  # much wierdness happened if i tried to put this into the daily menu conversation directly
+  - $: IncludeMission
+    Source: ./judgement/controller.yml
+    Metadata:
+      Name: ALCH_CHEF_JUDGE
+      ID: CHEFJD
+    Config:
+      ReadyChat: What have you prepared for me this time?
+      LeaveChat: And I was looking forward to trying new dish. Back to cataloguing.

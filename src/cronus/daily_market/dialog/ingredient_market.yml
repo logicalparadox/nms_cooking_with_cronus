@@ -1,0 +1,320 @@
+# <% const Market = Atlas.Config.IngredientMarket; %>
+# <% const Inventory = Market.Inventory; %>
+# <% const Pricing = Market.Pricing; %>
+
+LanguageKeys:
+  <%= Atlas.LocKey('BRIBE_INTRO_RES') %>:
+    - What's that Traveler, is the Ingredient Market not in your favor today? Lucky for you, we are friends! I will do you a favor.
+    - What you can buy today is locked in because of market forces and previous arrangements, but...
+  <%= Atlas.LocKey('BRIBE_LANG') %>:
+    - For a small processing fee, I will let you choose what you can sell at the market today.
+  <%= Atlas.LocKey('BRIBE_CANCEL_RES') %>:
+    - Nothing of interest, that's alright. Just don't go telling Polo about my offer, okay?
+  <%= Atlas.LocKey('BRIBE_DONE_RES') %>:
+    - Good choice! Give me a moment to make it official.
+  <%= Atlas.LocKey('HIGH_DEMAND') %>: In Demand
+
+Rewards:
+  - Id: <%= Atlas.Reward('BRIBE') %>
+    List:
+      - $: GcRewardModifyStat
+        Stat: <%= Atlas.Mod.Stat(`ECO_S`) %>
+        Amount: 0
+        ModifyType: Set
+  # <% Object.values(Pricing).forEach((spec) => { %>
+  - Id: <%= Atlas.Reward(`${spec.Key}_A`) %>
+    List:
+      - $: GcRewardMoney
+        Currency: Nanites
+        AmountMin: <%= (spec.PerUnit - spec.Fluctuation) * Inventory.SellCount %>
+        AmountMax: <%= (spec.PerUnit + spec.Fluctuation) * Inventory.SellCount %>
+  # <% }); %>
+
+  # <% Object.values(Pricing).forEach((spec) => { %>
+  - Id: <%= Atlas.Reward(`${spec.Key}_B`) %>
+    List:
+      - $: GcRewardMoney
+        Currency: Nanites
+        AmountMin: <%= (spec.PerUnit + spec.Fluctuation) * Inventory.SellCount %>
+        AmountMax: <%= (spec.PerUnit + spec.Fluctuation) * Inventory.SellCount %>
+  # <% }); %>
+
+  # <% ;['Creature', 'Meat', 'Plant'].forEach((category) => { %>
+  # <% const key = Pricing[category].Key; %>
+  # <% Market[category].forEach((prod) => { %>
+  - Id: <%= Atlas.Reward(`${key}${prod.Index}`) %>
+    List:
+      - $: GcRewardModifyStat
+        Stat: <%= Atlas.Mod.Stat(`${key}_C`) %>
+        Amount: 1
+        ModifyType: Add
+      - $: GcRewardSpecificProduct
+        ID: <%= prod.ID %>
+        AmountMin: <%= Inventory.BuyCount %>
+        AmountMax: <%= Inventory.BuyCount %>
+  # <% }); %>
+  # <% }); %>
+
+Costs:
+  # <% Object.values(Pricing).forEach((spec) => { %>
+  - Id: <%= Atlas.Cost(`${spec.Key}_A`) %>
+    Cost:
+      $: GcCostMoney
+      CostCurrency: Nanites
+      Cost: <%= (spec.PerUnit + spec.Fluctuation) * Inventory.BuyCount %>
+  # <% }); %>
+
+  # <% Object.values(Pricing).forEach((spec) => { %>
+  - Id: <%= Atlas.Cost(`${spec.Key}_B`) %>
+    Cost:
+      $: GcCostMoney
+      CostCurrency: Nanites
+      Cost: <%= (spec.PerUnit - spec.Fluctuation) * Inventory.BuyCount %>
+  # <% }); %>
+
+  # <% ;['Creature', 'Meat', 'Plant'].forEach((category) => { %>
+  # <% const key = Pricing[category].Key; %>
+  # <% Market[category].forEach((prod) => { %>
+  - Id: <%= Atlas.Cost(`${key}${prod.Index}_A`) %>
+    DisplayCost: true
+    HideOptionAndDisplayCostOnly: true
+    Cost:
+      $: GcCostProduct
+      Id: <%= prod.ID %>
+      Amount: <%= Inventory.SellCount %>
+
+  - Id: <%= Atlas.Cost(`${key}${prod.Index}_B`) %>
+    DisplayCost: true
+    HideOptionAndDisplayCostOnly: false
+    Cost:
+      $: GcCostProduct
+      Id: <%= prod.ID %>
+      Amount: <%= Inventory.SellCount %>
+  # <% }); %>
+  # <% }); %>
+
+  - Id: <%= Atlas.Cost('OOS') %>
+    DisplayCost: true
+    Cost:
+      $: GcCostMissionComplete
+      Cost: <%= Atlas.Metadata.Name %>
+      TextOverride: <%= Atlas.InlineLang('OOS_LABEL', 'Out of Stock') %>
+
+Dialog:
+  - Id: <%= Atlas.Dialog('IM') %>
+    $TextAlien: Are you looking to buy or sell?
+    TranslationBrackets: true
+    Options:
+      - $Name: Buy...
+        MarkInteractionComplete: false
+        KeepOpen: true
+        NextInteraction: <%= Atlas.Dialog('BUY') %>
+
+      - $Name: Sell...
+        MarkInteractionComplete: false
+        KeepOpen: true
+        NextInteraction: <%= Atlas.Dialog('SELL') %>
+
+      - $Name: About today's offerings...
+        Text: <%= Atlas.LocKey('BRIBE_INTRO_RES') %>
+        IsAlien: true
+        MarkInteractionComplete: false
+        KeepOpen: true
+        NextInteraction: <%= Atlas.Dialog('BRIBE') %>
+
+      - Name: <%= Atlas.Mod.LocKey('MENU_BACK_OPT') %>
+        MarkInteractionComplete: false
+        KeepOpen: true
+        NextInteraction: <%= Atlas.Dialog(`HOME`) %>
+        SelectedOnBackOut: true
+
+  - Id: <%= Atlas.Dialog('SELL') %>
+    # <% const creatureSell = Pricing.Creature.PerUnit * Inventory.SellCount; %>
+    # <% const meatSell = Pricing.Meat.PerUnit * Inventory.SellCount; %>
+    # <% const plantSell = Pricing.Plant.PerUnit * Inventory.SellCount; %>
+    $TextAlien: When selling your goods, I will pay average market per-shipment price of <SPECIAL><%= creatureSell %><> for creature byproducts, <SPECIAL><%= meatSell %><> for meat, and <SPECIAL><%= plantSell %><> for plants.
+    TranslationBrackets: true
+    Options:
+      # <% ;['Creature', 'Meat', 'Plant'].forEach((category, i) => { %>
+      # <% const key = Pricing[category].Key; %>
+      # <% Market[category].forEach((prod) => { %>
+      - Name: <%= prod.NameLower %>
+        MarkInteractionComplete: false
+        KeepOpen: true
+        EnablingConditionTest: AnyFalse
+        EnablingConditions:
+          - $: GcMissionConditionStatLevel
+            Stat: <%= Atlas.Mod.Stat(`${key}_S`) %>
+            Level: <%= prod.Index %>
+            Test: Equal
+          - $: GcMissionConditionGroup
+            ConditionTest: AnyTrue
+            Conditions:
+              - $: GcMissionConditionStatLevel
+                Stat: <%= Atlas.Mod.Stat(`ECO_S`) %>
+                Level: <%= i + 1 %>
+                Test: Equal
+        Cost: <%= Atlas.Cost(`${key}${prod.Index}_A`) %>
+        Rewards:
+          - <%= Atlas.Reward(`${key}_A`) %>
+
+      - Name: <%= Atlas.LocKey('HIGH_DEMAND') %>
+        MarkInteractionComplete: false
+        KeepOpen: true
+        EnablingConditionTest: AnyFalse
+        EnablingConditions:
+          - $: GcMissionConditionStatLevel
+            Stat: <%= Atlas.Mod.Stat(`${key}_S`) %>
+            Level: <%= prod.Index %>
+            Test: Equal
+          - $: GcMissionConditionStatLevel
+            Stat: <%= Atlas.Mod.Stat(`ECO_S`) %>
+            Level: <%= i + 1 %>
+            Test: Equal
+        Cost: <%= Atlas.Cost(`${key}${prod.Index}_B`) %>
+        Rewards:
+          - <%= Atlas.Reward(`${key}_B`) %>
+      # <% }); %>
+      # <% }); %>
+
+      - Name: <%= Atlas.Mod.LocKey('MENU_BACK_OPT') %>
+        MarkInteractionComplete: false
+        KeepOpen: true
+        NextInteraction: <%= Atlas.Dialog('IM') %>
+        SelectedOnBackOut: true
+
+  - Id: <%= Atlas.Dialog('BUY') %>
+    $TextAlien: Each shipment contains <SPECIAL><%= Inventory.BuyCount %><> of the purchased item. Limited to <SPECIAL><%= Inventory.BuyStock %><> shipments of each category per day.
+    TranslationBrackets: true
+    Options:
+      # <% ;['Creature', 'Meat', 'Plant'].forEach((category, i) => { %>
+      # <% const key = Pricing[category].Key; %>
+      # <% Market[category].forEach((prod) => { %>
+      - Name: <%= prod.NameLower %>
+        MarkInteractionComplete: false
+        KeepOpen: true
+        EnablingConditionTest: AnyFalse
+        EnablingConditions:
+          - $: GcMissionConditionStatLevel
+            Stat: <%= Atlas.Mod.Stat(`${key}_B`) %>
+            Level: <%= prod.Index %>
+            Test: Equal
+          - $: GcMissionConditionStatLevel
+            Stat: <%= Atlas.Mod.Stat(`${key}_C`) %>
+            Level: <%= Inventory.BuyStock %>
+            Test: Less
+          - $: GcMissionConditionGroup
+            ConditionTest: AnyTrue
+            Conditions:
+              - $: GcMissionConditionStatLevel
+                Stat: <%= Atlas.Mod.Stat(`ECO_B`) %>
+                Level: <%= i + 1 %>
+                Test: Equal
+        Cost: <%= Atlas.Cost(`${key}_A`) %>
+        Rewards:
+          - <%= Atlas.Reward(`${key}${prod.Index}`) %>
+
+      - Name: <%= Atlas.InlineLang(`SALE_${key}${prod.Index}`, `On Sale ~ ${prod.NameString}`) %>
+        MarkInteractionComplete: false
+        KeepOpen: true
+        EnablingConditionTest: AnyFalse
+        EnablingConditions:
+          - $: GcMissionConditionStatLevel
+            Stat: <%= Atlas.Mod.Stat(`${key}_B`) %>
+            Level: <%= prod.Index %>
+            Test: Equal
+          - $: GcMissionConditionStatLevel
+            Stat: <%= Atlas.Mod.Stat(`${key}_C`) %>
+            Level: <%= Inventory.BuyStock %>
+            Test: Less
+          - $: GcMissionConditionStatLevel
+            Stat: <%= Atlas.Mod.Stat(`ECO_B`) %>
+            Level: <%= i + 1 %>
+            Test: Equal
+        Cost: <%= Atlas.Cost(`${key}_B`) %>
+        Rewards:
+          - <%= Atlas.Reward(`${key}${prod.Index}`) %>
+
+      - Name: <%= prod.NameLower %>
+        MarkInteractionComplete: false
+        KeepOpen: true
+        EnablingConditionTest: AnyFalse
+        EnablingConditions:
+          - $: GcMissionConditionStatLevel
+            Stat: <%= Atlas.Mod.Stat(`${key}_B`) %>
+            Level: <%= prod.Index %>
+            Test: Equal
+          - $: GcMissionConditionStatLevel
+            Stat: <%= Atlas.Mod.Stat(`${key}_C`) %>
+            Level: <%= Inventory.BuyStock %>
+            Test: GreaterEqual
+        Cost: <%= Atlas.Cost(`OOS`) %>
+      # <% }); %>
+      # <% }); %>
+
+      - Name: <%= Atlas.Mod.LocKey('MENU_BACK_OPT') %>
+        MarkInteractionComplete: false
+        KeepOpen: true
+        NextInteraction: <%= Atlas.Dialog('IM') %>
+        SelectedOnBackOut: true
+
+  - Id: <%= Atlas.Dialog('BRIBE') %>
+    TextAlien: <%= Atlas.LocKey('BRIBE_LANG') %>
+    TranslationBrackets: true
+    Options:
+      # <% ;['Creature', 'Meat', 'Plant'].forEach((category) => { %>
+      # <% const key = Pricing[category].Key; %>
+      - Name: <%= Atlas.Mod.LocKey(`${key}_TITLE`) %>
+        MarkInteractionComplete: false
+        KeepOpen: true
+        NextInteraction: <%= Atlas.Dialog(`BR_${key}1`) %>
+      # <% }); %>
+
+      - Name: <%= Atlas.Mod.LocKey('MENU_BACK_OPT') %>
+        Text: <%= Atlas.LocKey('BRIBE_CANCEL_RES') %>
+        IsAlien: true
+        MarkInteractionComplete: false
+        KeepOpen: true
+        NextInteraction: <%= Atlas.Dialog('IM') %>
+        SelectedOnBackOut: true
+
+  # <% ;['Creature', 'Meat', 'Plant'].forEach((category) => { %>
+  # <% const key = Pricing[category].Key; %>
+  # <% Atlas.Tools.Paginate(Market[category], 3, (items, p, t) => { %>
+  - Id: <%= Atlas.Dialog(`BR_${key}${p}`) %>
+    TextAlien: <%= Atlas.LocKey('BRIBE_LANG') %>
+    TranslationBrackets: true
+    Options:
+      # <% items.forEach((prod) => { %>
+      - Name: <%= prod.NameLower %>
+        Text: <%= Atlas.LocKey('BRIBE_DONE_RES') %>
+        IsAlien: true
+        MarkInteractionComplete: false
+        KeepOpen: true
+        NextInteraction: <%= Atlas.Dialog('IM') %>
+        Cost: <%= Atlas.Cost(`${key}_A`) %>
+        Rewards:
+          - <%= Atlas.Reward('BRIBE') %>
+          - Id: <%= Atlas.Reward(`BR_${key}${prod.Index}`) %>
+            List:
+              - $: GcRewardModifyStat
+                Stat: <%= Atlas.Mod.Stat(`${key}_S`) %>
+                Amount: <%= prod.Index %>
+                ModifyType: Set
+      # <% }); %>
+
+      # <% if (p === t) { %>
+      - Name: <%= Atlas.Mod.LocKey('MENU_BACK_OPT') %>
+        MarkInteractionComplete: false
+        KeepOpen: true
+        NextInteraction: <%= Atlas.Dialog('BRIBE') %>
+        SelectedOnBackOut: true
+      # <% } else { %>
+      - Name: <%= Atlas.Mod.LocKey('MENU_NEXT_OPT') %>
+        MarkInteractionComplete: false
+        KeepOpen: true
+        NextInteraction: <%= Atlas.Dialog(`BR_${key}${p + 1}`) %>
+        SelectedOnBackOut: true
+      # <% } %>
+  # <% }); %>
+  # <% }); %>

@@ -1,0 +1,84 @@
+PulseEncounters:
+  - Id: <%= Atlas.Mod.PulseEncounter('SONG') %>
+    MarkerLabel: UI_PULSE_ENCOUNTER_NAME_BIOFRIG
+    ChatMessageName: UI_PULSE_ENCOUNTER_NAME_BIOFRIG
+    MarkerIcon: TEXTURES/UI/HUD/ICONS/MISSIONS/MISSION.BIOFRIG.DDS
+    CustomNotify: UI_PULSE_ENCOUNTER_MSG_BIOFRIG
+    CustomNotifyTitle: UI_PULSE_ENCOUNTER_TIT_BIOFRIG
+    CustomNotifyOSD: UI_PULSE_ENCOUNTER_OSD_BIOFRIG
+    UseMarkerIconInOSD: true
+    SpawnConditions:
+      AllowedInCreative: true
+      AllowedInEmptySystem: true
+      AllowedBeyondPortals: true
+    SpawnChance: 0
+    SpawnDistance: 6000
+    AudioEvent: FRIGATE_LIVING_REVEAL
+    Encounter:
+      $: GcPulseEncounterSpawnFrigateFlyby
+      FlybyType: DeepSpaceCommon
+      CommunicatorOSDLocId: UI_HAIL_BIOFRIG_OSD
+      CommunicatorMessage:
+        Dialog: <%= Atlas.Mod.Dialog('SONG') %>
+        ShipHUDOverride: UI_HAIL_BIOFRIG_HUD
+
+Rewards:
+  - Id: <%= Atlas.Mod.Reward("SONG") %>
+    RewardChoice: GiveAllSilent
+    List:
+      - $: GcRewardExchangeProduct
+        IDToGive: <%= Atlas.Mod.Product("SONG_X") %>
+        IDToTake: <%= Atlas.Mod.Product("SONG") %>
+        HideNewProduct: true
+      - $: GcRewardMission
+        Mission: <%= Atlas.Config.MissionRef.Whalesong %>
+        FailRewardIfMissionActive: true
+
+Products:
+  - ID: <%= Atlas.Mod.Product("SONG") %>
+    $Name: OFFERING OF A FORGOTTEN SONG
+    $NameLower: Offering of a Forgotten Song
+    $Subtitle: Cosmic Megafauna Communicator
+    $Description: >-
+      A highly refined food product whose recipe was composed by <HIGHLIGHT>Iteration Cronus<>
+      to attune to the memories found in the wake of <RARE>cosmic megafauna<>. When the 
+      <SPECIAL>Forgotten Song<> finds harmony with <VISOR>WHALESONG<>, time can be witnessed unbound. 
+
+
+      <STELLAR>You can faintly hear a chorus of voices reaching out to the depths of space.<>
+
+
+      Use Harmonize (<IMG>FE_ALT1<>) while in <SPECIAL>deep space<> to broadcast 
+      an invitation for a harmonic partner.
+
+    Icon: TEXTURES/UI/FRONTEND/ICONS/COOKINGPRODUCTS/PRODUCT.REFINED.TARTEVIL.DDS
+    Colour: { R: 0.302, G: 0.161, B: 0.341, A: 1.0 }
+    IsCraftable: true
+    CookingIngredient: true
+    CookingValue: 1
+    BaseValue: 161616
+    Requirements:
+      - ID: FOOD_R_MMERMIX
+        Amount: 1
+      - ID: FOOD_R_MCUSTARD
+        Amount: 1
+      - ID: FOOD_JAM_GLITCH
+        Amount: 1
+
+    Consumable:
+      RewardID: <%= Atlas.Mod.Reward("SONG") %>
+      $Button: HARMONIZE
+      $ButtonSub: Use while in deep space to attract nearby cosmic megafauna.
+      DestroyItemWhenConsumed: false
+
+  - ID: <%= Atlas.Mod.Product("SONG_X") %>
+    $Name: OFFERING OF A FORGOTTEN SONG (BROADCASTING)
+    $NameLower: Offering of a Forgotten Song (Broadcasting)
+    $Subtitle: Harmonic Cosmic Megefauna Communicator
+    # TODO: styles
+    $Description: |-
+      The Offering's chorus is reaching out to the depths of space for a harmonic partner.
+
+      Activate your Pulse Drive in deep space to extend the offerings broadcast range.
+    Icon: TEXTURES/UI/FRONTEND/ICONS/COOKINGPRODUCTS/PRODUCT.REFINED.TARTEVIL.DDS
+    Colour: { R: 0.302, G: 0.161, B: 0.341, A: 1.0 }

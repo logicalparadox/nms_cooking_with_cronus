@@ -1,0 +1,61 @@
+DailyProductExchange:
+  - Index: 0
+    Delivery:
+      Product: FOOD_DNUT_SCUST
+      ProductName: The Stellarator
+      ProductLang: FOOD_DNUT_SCUST_NAME_L
+      NanitesPerUnit: 210
+    Dialog:
+      Anticipation: A doughnut made of starlight, sublime!
+
+  - Index: 1
+    Delivery:
+      Product: FOOD_EGGPIE_MU
+      ProductName: Fungal Omelette
+      ProductLang: FOOD_EGGPIE_MOLE_NAME_L
+      NanitesPerUnit: 180
+    IngredientConflicts:
+      - FOOD_V_MOLE
+    Dialog:
+      Anticipation: Nutritious non-toxic fungi, delicious!
+
+  - Index: 2
+    Delivery:
+      Product: FOOD_CG_CHOC
+      ProductName: Chocolate Curiosity
+      ProductLang: FOOD_CG_CHOC_NAME_L
+      NanitesPerUnit: 190
+    IngredientConflicts:
+      - FOOD_V_GEK
+      - FOOD_P_LUSHWILD
+    Dialog:
+      Anticipation: Such decadence in one cake, preposterous!
+
+  - Index: 3
+    Delivery:
+      Product: FOOD_PIE_MCUST
+      ProductName: The Spawning Tart
+      ProductLang: FOOD_PIE_MCUST_NAME_L
+      NanitesPerUnit: 200
+    Dialog:
+      Anticipation: A creamy larval custard pie, a classic!
+
+  - Index: 4
+    Delivery:
+      Product: FOOD_CM_JHOT
+      ProductName: Cake of Burning Dread
+      ProductLang: FOOD_CM_JHOT_NAME_L
+      NanitesPerUnit: 210
+    IngredientConflicts:
+      - FOOD_P_HOTWILD
+    Dialog:
+      Anticipation: Don't be nervous, it's just a name. Probably.
+
+  - Index: 5
+    Delivery:
+      Product: FOOD_W_SWEETM
+      ProductName: Syrupy Viscera
+      ProductLang: FOOD_W_SWEETM_NAME_L
+      NanitesPerUnit: 180
+    Dialog:
+      Anticipation: A delicate balance of sweetness and nightmares. Ingenius!

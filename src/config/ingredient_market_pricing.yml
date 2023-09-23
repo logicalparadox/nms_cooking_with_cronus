@@ -1,0 +1,20 @@
+# sell and buy are from player perspective
+
+IngredientMarket:
+  Inventory:
+    SellCount: 25
+    BuyCount: 50
+    BuyStock: 5
+  Pricing:
+    Creature:
+      Key: IMC
+      PerUnit: 12
+      Fluctuation: 3
+    Meat:
+      Key: IMM
+      PerUnit: 8
+      Fluctuation: 2
+    Plant:
+      Key: IMP
+      PerUnit: 4
+      Fluctuation: 1

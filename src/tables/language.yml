@@ -1,0 +1,17 @@
+LanguageKeys:
+  <%= Atlas.Mod.LocKey('MENU_NEXT_OPT') %>: More Options...
+  <%= Atlas.Mod.LocKey('MENU_BACK_OPT') %>: Return...
+
+  <%= Atlas.Mod.LocKey('MENU_ING_SHOP') %>: Ingredients Market...
+
+  <%= Atlas.Mod.LocKey('MENU_YES_OPT') %>: Yes
+  <%= Atlas.Mod.LocKey('MENU_NO_OPT') %>: No
+
+  <%= Atlas.Mod.LocKey('MENU_JUDGE_OPT') %>: Food Critique...
+  <%= Atlas.Mod.LocKey('MENU_JUDGE_RES') %>: Give me a moment to prepare...
+
+  <%= Atlas.Mod.LocKey('JOB_UI_TITLE_PREFIX') %>: Culinary Opportunities Available
+
+  <%= Atlas.Mod.LocKey('IMC_TITLE') %>: Creature Products
+  <%= Atlas.Mod.LocKey('IMM_TITLE') %>: Meat Products
+  <%= Atlas.Mod.LocKey('IMP_TITLE') %>: Edible Flora

@@ -1,0 +1,159 @@
+Include:
+  - ./dialog.yml
+
+LanguageKeys:
+  <%= Atlas.LocKey('SONG_OBJ') %>: Activate the Offering of a Forgotten Song
+  <%= Atlas.LocKey('SONG_OBJ_TIP') %>: >
+    Locate the <RARE>Offering of a Forgotten Song<> in your Inventory 
+    (<IMG>INVENTORY<>) then use Harmonize (<IMG>FE_ALT1<>) while in 
+    <SPECIAL>deep space<> to broadcast an invitation for a harmonic partner.
+  <%= Atlas.LocKey('SONG_OBJ_WAIT') %>: |
+    Locate the <RARE>Offering of a Forgotten Song<> in your Inventory (<IMG>INVENTORY<>).
+    Use Harmonize (<IMG>FE_ALT1<>) to search for a harmonic partner...
+  <%= Atlas.LocKey('WHALE_OBJ') %>: Follow the offering's guidance
+  <%= Atlas.LocKey('WHALE_OBJ_TIP') %>: >
+    The <SPECIAL>Offering of a Forgotten Song<> is seeking a harmonic partner. Follow
+    it's guidance to unlock it's secrets.
+  <%= Atlas.LocKey('CRON_OBJ') %>: Return to Cronus aboard the Nexus
+  <%= Atlas.LocKey('CRON_OBJ_TIP') %>: |
+    Return to <HIGHLIGHT>Iteration Cronus<> aboard the Nexus.
+    Summon the Nexus from the <TECHNOLOGY>Quick Menu<> (<IMG>QUICK_MENU<>).
+  <%= Atlas.LocKey('CRON_OBJ_WAIT_A') %>: |
+    <TITLE>Return to<> <HIGHLIGHT>Iteration Cronus<> <TITLE>aboard the Nexus<>
+    Summon the Nexus from the <TECHNOLOGY>Quick Menu<> (<IMG>QUICK_MENU<>)
+  <%= Atlas.LocKey('CRON_OBJ_WAIT_B') %>: |
+    <TITLE>Return to<> <HIGHLIGHT>Iteration Cronus<> <TITLE>aboard the Nexus<>
+
+Mission:
+  $Table: CoreMissionTable
+  $AutoStageVersions: true
+  MissionID: <%= Atlas.Metadata.Name %>
+  MissionClass: Secondary
+
+  MissionIcon: TEXTURES/UI/FRONTEND/ICONS/MISSIONS/MISSION.BIOFRIG.ON.DDS
+  MissionIconSelected: TEXTURES/UI/FRONTEND/ICONS/MISSIONS/MISSION.BIOFRIG.ON.DDS
+  MissionIconNotSelected: TEXTURES/UI/FRONTEND/ICONS/MISSIONS/MISSION.BIOFRIG.OFF.DDS
+
+  $MissionTitles:
+    - Forgotten Songs
+
+  $MissionSubtitles:
+    - Cosmic Megafauna Encounter
+
+  $MissionDescriptions:
+    - >-
+      <HIGHLIGHT>Iteration Cronus<> has prepared an <SPECIAL>Offering of a Forgotten Song<>, 
+      a dessert that can capture the attention of nearby <RARE>cosmic megafauna<>. 
+
+
+      NOTE: Should the offering be lost before completing the encounter, a replacement can
+      be obtained from <HIGHLIGHT>Cronus<>.
+
+  ScanEvents:
+    - Name: <%= Atlas.ScanEvent('CRON') %>
+      ForceInteraction: <%= Atlas.Dialog(`HOME`) %>
+      ForceInteractionType: ExoticExtra6
+      ForceRestartInteraction: true
+      ForceOverridesAll: true
+      ClearForcedInteractionOnCompletion: true
+      DisableMultiplayerSync: true
+      EventStartType: Special
+      EventEndType: Interact
+      EventPriority: High
+      AllowOverriddenBuildings: true
+      BuildingLocation: Nearest
+      BuildingType: Nexus
+      MarkerLabel: <%= Atlas.InlineLang(`LBL_CRON`, `Share your story with Cronus`) %>
+      MarkerIcon: TEXTURES/UI/HUD/ICONS/MISSIONS/MISSION.ANOMALYSTATION.DDS
+
+  Rewards:
+    - Id: <%= Atlas.Reward('SONG') %>
+      List:
+        - $: GcRewardSpecificProduct
+          ID: <%= Atlas.Mod.Product("SONG") %>
+          AmountMin: 1
+          AmountMax: 1
+          HideAmountInMessage: true
+          ForceSpecialMessage: true
+
+  Stages:
+    - $: GcMissionSequenceGroup
+      ObjectiveID: <%= Atlas.LocKey('SONG_OBJ') %>
+      ObjectiveTipID: <%= Atlas.LocKey('SONG_OBJ_TIP') %>
+      Icon: TEXTURES/UI/HUD/ICONS/MISSIONS/MISSION.BIOFRIG.DDS
+      ConditionTest: AnyTrue
+      Conditions:
+        - $: GcMissionConditionMissionMessage
+          Message: <%= Atlas.Mod.Message('DREAM') %>
+      Stages:
+        - $: GcMissionSequenceReward
+          Reward: <%= Atlas.Reward('SONG') %>
+
+        - $: GcMissionSequenceShowMissionUpdateMessage
+          MissionUpdateMessage: Start
+          PlayMusicString: Start
+          SetMissionSelected: true
+
+        - $: GcMissionSequenceGroup
+          Silent: true
+          RepeatLogic: Loop
+          Stages:
+            - $: GcMissionSequenceWaitForConditions
+              Message: <%= Atlas.LocKey('SONG_OBJ_WAIT') %>
+              ConditionTest: AllTrue
+              Conditions:
+                - $: GcMissionConditionIsMissionInProgress
+                  MissionID: <%= Atlas.Config.MissionRef.Whalesong %>
+
+            - $: GcMissionSequenceGroup
+              ObjectiveID: <%= Atlas.LocKey('WHALE_OBJ') %>
+              ObjectiveTipID: <%= Atlas.LocKey('WHALE_OBJ_TIP') %>
+              Stages:
+                - $: GcMissionSequenceWaitForConditions
+                  ConditionTest: AllFalse
+                  Conditions:
+                    - $: GcMissionConditionIsMissionInProgress
+                      MissionID: <%= Atlas.Config.MissionRef.Whalesong %>
+
+                # Wait for message indicating complete, otherwise loop
+                - $: GcMissionSequenceWait
+                  Time: 2.0
+
+    - $: GcMissionSequenceGroup
+      ObjectiveID: <%= Atlas.LocKey('CRON_OBJ') %>
+      ObjectiveTipID: <%= Atlas.LocKey('CRON_OBJ_TIP') %>
+      Stages:
+        - $: GcMissionSequenceModifyStat
+          Stat: <%= Atlas.Mod.Stat('POE') %>
+          Level: 0
+          ModifyType: Set
+
+        - $: GcMissionSequenceModifyStat
+          Stat: <%= Atlas.Mod.Stat('LORE') %>
+          Level: <%= Atlas.Config.StoryProgress.WhalesongComplete %>
+          ModifyType: Set
+
+        - $: GcMissionSequenceStartScanEvent
+          Event: <%= Atlas.ScanEvent('CRON') %>
+
+        - $: GcMissionSequenceShowMissionUpdateMessage
+          MissionUpdateMessage: Start
+          SetMissionSelected: true
+          WaitForMessageOver: false
+
+        - $: GcMissionSequenceWaitForConditions
+          Message: <%= Atlas.LocKey('CRON_OBJ_WAIT_A') %>
+          ConditionTest: AnyTrue
+          Conditions:
+            - $: GcMissionConditionLocation
+              MissionPlayerLocation: InNexus
+
+        - $: GcMissionSequenceWaitForScanEvent
+          Event: <%= Atlas.ScanEvent('CRON') %>
+          Message: <%= Atlas.LocKey('CRON_OBJ_WAIT_B') %>
+
+    - $: GcMissionSequenceShowMissionUpdateMessage
+      MissionUpdateMessage: End
+      PlayMusicString: End
+      SetMissionSelected: true
+      WaitForMessageOver: false

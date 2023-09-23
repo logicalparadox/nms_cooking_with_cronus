@@ -1,0 +1,205 @@
+Include:
+  - ./dialog/ingredient_market.yml
+
+Dialog:
+  - Id: <%= Atlas.Dialog('MENU') %>
+    $Text: Select debug task...
+    Options:
+      - $Name: Scheduling...
+        NextInteraction: <%= Atlas.Dialog('CRON') %>
+        KeepOpen: true
+
+      - $Name: Ingredients Market...
+        NextInteraction: <%= Atlas.Dialog('IM') %>
+        KeepOpen: true
+
+      - $Name: Whalesong...
+        NextInteraction: <%= Atlas.Dialog('WS') %>
+        KeepOpen: true
+
+      - Name: ALL_REQUEST_LEAVE
+        MarkInteractionComplete: true
+        SelectedOnBackOut: true
+
+  - Id: <%= Atlas.Dialog('CRON') %>
+    $Text: The Nexus is a pocket dimension of determinism, so if resetting it's best to head into space. Only an issue when simulating reset, not when auto-reset via clock.
+    Options:
+      - $Name: Reset Tutorial
+        Rewards:
+          - Id: <%= Atlas.Reward('INTRO') %>
+            List:
+              - $: GcRewardModifyStat
+                Stat: <%= Atlas.Mod.Stat('TUT') %>
+                Amount: 0
+                ModifyType: Set
+
+      - $Name: Simulate Daily Reset
+        Rewards:
+          - <%= Atlas.Mod.Reward('RESET') %>
+
+      - $Name: Set Daily Promotion
+        NextInteraction: <%= Atlas.Dialog('CP_1') %>
+        KeepOpen: true
+
+      - Name: <%= Atlas.Mod.LocKey('MENU_BACK_OPT') %>
+        NextInteraction: <%= Atlas.Dialog('MENU') %>
+        SelectedOnBackOut: true
+
+  # <% const cronusPromotions = Atlas.Config.DailyProductExchange; %>
+  # <% Atlas.Tools.Paginate(cronusPromotions, 3, (items, p, t) => { %>
+  - Id: <%= Atlas.Dialog(`CP_${p}`) %>
+    $Text: Select the thing...
+    Options:
+      # <% items.forEach((item) => { %>
+      - Name: <%= item.Delivery.ProductLang %>
+        Rewards:
+          - Id: <%= Atlas.Reward(`CRON_${item.Index}`) %>
+            List:
+              - $: GcRewardModifyStat
+                Stat: <%= Atlas.Mod.Stat('API') %>
+                Amount: <%= item.Index %>
+                ModifyType: Set
+              - $: GcRewardModifyStat
+                Stat: <%= Atlas.Mod.Stat('CDH') %>
+                Amount: 0
+                ModifyType: Set
+              - $: GcRewardSpecificProduct
+                ID: <%= item.Delivery.Product %>
+                AmountMin: 16
+                AmountMax: 16
+      # <% }); %>
+
+      # <% if (p === t) { %>
+      - Name: <%= Atlas.Mod.LocKey('MENU_BACK_OPT') %>
+        KeepOpen: true
+        NextInteraction: <%= Atlas.Dialog('CRON') %>
+        SelectedOnBackOut: true
+      # <% } else { %>
+      - Name: <%= Atlas.Mod.LocKey('MENU_NEXT_OPT') %>
+        KeepOpen: true
+        NextInteraction: <%= Atlas.Dialog(`CP_${p + 1}`) %>
+        SelectedOnBackOut: true
+      # <% } %>
+  # <% }); %>
+
+  - Id: <%= Atlas.Dialog('WS') %>
+    $Text: Whalesong options...
+    Options:
+      - $Name: Reset Tutorial
+        Rewards:
+          - Id: <%= Atlas.Reward('WSTUT') %>
+            List:
+              - $: GcRewardModifyStat
+                Stat: <%= Atlas.Mod.Stat('WS_TUT') %>
+                Amount: 0
+                ModifyType: Set
+      - $Name: Give Song x5
+        Rewards:
+          - Id: <%= Atlas.Reward('WSFOOD') %>
+            List:
+              - $: GcRewardSpecificProduct
+                ID: <%= Atlas.Mod.Product('SONG') %>
+                AmountMin: 5
+                AmountMax: 5
+      - $Name: Teach Recipe
+        Rewards:
+          - Id: <%= Atlas.Reward('WSREC') %>
+            List:
+              - $: GcRewardSpecificProductRecipe
+                ID: <%= Atlas.Mod.Product("SONG") %>
+              - $: GcRewardSpecificProduct
+                ID: FOOD_R_MMERMIX
+                AmountMin: 5
+                AmountMax: 5
+              - $: GcRewardSpecificProduct
+                ID: FOOD_R_MCUSTARD
+                AmountMin: 5
+                AmountMax: 5
+              - $: GcRewardSpecificProduct
+                ID: FOOD_JAM_GLITCH
+                AmountMin: 5
+                AmountMax: 5
+      - Name: <%= Atlas.Mod.LocKey('MENU_BACK_OPT') %>
+        NextInteraction: <%= Atlas.Dialog('MENU') %>
+        SelectedOnBackOut: true
+
+Mission:
+  $Table: CoreMissionTable
+  MissionID: <%= Atlas.Metadata.Name %>
+  MissionClass: Secondary
+  AutoStart: AllModes
+
+  $MissionTitles:
+    - Cooking With Cronos
+
+  $MissionSubtitles:
+    - Developer Menu
+
+  $MissionDescriptions:
+    - While in your ship, use scan to bring up the debug menu.
+
+  # StartIsCancel: true
+  # StartConditionTest: AnyFalse
+  # StartingConditions:
+  #   - $: GcMissionConditionLocation
+  #     MissionPlayerLocation: InShipAnywhere
+
+  Stages:
+    - $: GcMissionSequenceGroup
+      Silent: true
+      RepeatLogic: Loop
+      Stages:
+        - $: GcMissionSequenceGroup
+          ObjectiveID: <%= Atlas.InlineLang("SHIP_OBJ", "Waiting for player in ship...") %>
+          Stages:
+            - $: GcMissionSequenceWaitForConditions
+              ConditionTest: AllTrue
+              Conditions:
+                - $: GcMissionConditionLocation
+                  MissionPlayerLocation: InShipAnywhere
+                - $: GcMissionConditionGroup
+                  ConditionTest: AnyTrue # when AnyTrue will return false
+                  Conditions:
+                    - $: GcMissionConditionMissionMessageWarp
+                    - $: GcMissionConditionShipEngineStatus
+                      EngineStatus: Pulsing
+                    - $: GcMissionConditionInCombat
+                      CombatType: SpaceCombat
+
+        - $: GcMissionSequenceGroup
+          ObjectiveID: <%= Atlas.InlineLang("SCAN_OBJ", "Waiting for player to scan...") %>
+          RepeatLogic: Loop
+          ConditionTest: AnyFalse # when AnyFalse, this sequence group will eject
+          Conditions:
+            - $: GcMissionConditionLocation
+              MissionPlayerLocation: InShipAnywhere
+            - $: GcMissionConditionGroup
+              ConditionTest: AnyTrue # when AnyTrue will return false
+              Conditions:
+                - $: GcMissionConditionMissionMessageWarp
+                - $: GcMissionConditionShipEngineStatus
+                  EngineStatus: Pulsing
+                - $: GcMissionConditionInCombat
+                  CombatType: SpaceCombat
+
+          Stages:
+            # wait for player to select this mission in the log
+            - $: GcMissionSequenceWaitForConditions
+              ConditionTest: AllTrue
+              Conditions:
+                - $: GcMissionConditionIsCurrentMission
+
+            - $: GcMissionSequenceGroup
+              Silent: true
+              ConditionTest: AnyFalse
+              Conditions:
+                - $: GcMissionConditionIsCurrentMission # bail if not selected
+              Stages:
+                # wait for player to press the scan button
+                - $: GcMissionSequenceScan
+
+                # bring up ship dialog with debug menu
+                - $: GcMissionSequenceCommunicator
+                  AutoOpen: true
+                  Comms:
+                    Dialog: <%= Atlas.Dialog('MENU') %>

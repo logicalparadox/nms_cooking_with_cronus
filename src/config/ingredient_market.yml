@@ -1,0 +1,160 @@
+IngredientMarket:
+  Creature:
+    - ID: FOOD_V_BLOB
+      Index: 0
+      NameLower: FOOD_BLOB_VEG_NAME_L
+      NameString: Sticky 'Honey'
+    - ID: FOOD_V_GEK
+      Index: 1
+      NameLower: FOOD_GEK_VEG_NAME_L
+      NameString: Warm Proto-Milk
+    - ID: FOOD_V_DIPLO
+      Index: 2
+      NameLower: FOOD_DIPLO_VEG_NAME_L
+      NameString: Giant Egg
+    - ID: FOOD_V_REX
+      Index: 3
+      NameLower: FOOD_REX_VEG_NAME_L
+      NameString: Regis Grease
+    - ID: FOOD_V_CAT
+      Index: 4
+      NameLower: FOOD_CAT_VEG_NAME_L
+      NameString: Leopard-Fruit
+    - ID: FOOD_V_STRIDER
+      Index: 5
+      NameLower: FOOD_STRIDER_VEG_NAME_L
+      NameString: Tall Eggs
+    - ID: FOOD_V_COW
+      Index: 6
+      NameLower: FOOD_COW_VEG_NAME_L
+      NameString: Fresh Milk
+    - ID: FOOD_V_CRAB
+      Index: 7
+      NameLower: FOOD_CRAB_VEG_NAME_L
+      NameString: Crab 'Apple'
+    - ID: FOOD_V_BONE
+      Index: 8
+      NameLower: FOOD_BONE_VEG_NAME_L
+      NameString: Bone Nuggets
+    - ID: FOOD_V_MOLE
+      Index: 9
+      NameLower: FOOD_MOLE_VEG_NAME_L
+      NameString: Foraged Mushrooms
+    - ID: FOOD_V_ROBOT
+      Index: 10
+      NameLower: FOOD_ROBOT_VEG_NAME_L
+      NameString: Chewy Wires
+    - ID: FOOD_V_FLYER
+      Index: 11
+      NameLower: FOOD_FLYER_VEG_NAME_L
+      NameString: Craw Milk
+    - ID: FOOD_V_EGG
+      Index: 12
+      NameLower: FOOD_GENERIC_VEG_NAME_L
+      NameString: Creature Egg
+    - ID: FOOD_V_MILK
+      Index: 13
+      NameLower: FOOD_GENERIC_MILK_NAME_L
+      NameString: Wild Milk
+  Meat:
+    - ID: FOOD_M_FISH
+      Index: 0
+      NameLower: FOOD_FISH_MEAT_NAME_L
+      NameString: Salty Fingers
+    - ID: FOOD_M_FLYER
+      Index: 1
+      NameLower: FOOD_FLYER_MEAT_NAME_L
+      NameString: Meaty Wings
+    - ID: FOOD_M_FIEND
+      Index: 2
+      NameLower: FOOD_FIEND_MEAT_NAME_L
+      NameString: Fiendish Roe
+    - ID: FOOD_M_BLOB
+      Index: 3
+      NameLower: FOOD_BLOB_MEAT_NAME_L
+      NameString: Offal Sac
+    - ID: FOOD_M_GEK
+      Index: 4
+      NameLower: FOOD_GEK_MEAT_NAME_L
+      NameString: ProtoSausage
+    - ID: FOOD_M_DIPLO
+      Index: 5
+      NameLower: FOOD_DIPLO_MEAT_NAME_L
+      NameString: Diplo Chunks
+    - ID: FOOD_M_REX
+      Index: 6
+      NameLower: FOOD_REX_MEAT_NAME_L
+      NameString: Scaly Meat
+    - ID: FOOD_M_CAT
+      Index: 7
+      NameLower: FOOD_CAT_MEAT_NAME_L
+      NameString: Feline Liver
+    - ID: FOOD_M_STRIDER
+      Index: 8
+      NameLower: FOOD_STRIDER_MEAT_NAME_L
+      NameString: Strider Sausage
+    - ID: FOOD_M_COW
+      Index: 9
+      NameLower: FOOD_COW_MEAT_NAME_L
+      NameString: Raw Steak
+    - ID: FOOD_M_CRAB
+      Index: 10
+      NameLower: FOOD_CRAB_MEAT_NAME_L
+      NameString: Leg Meat
+    - ID: FOOD_M_MOLE
+      Index: 11
+      NameLower: FOOD_MOLE_MEAT_NAME_L
+      NameString: Scooped Innards
+    - ID: FOOD_M_BONE
+      Index: 12
+      NameLower: FOOD_BONE_MEAT_NAME_L
+      NameString: Crystal Flesh
+    - ID: FOOD_M_DRILL
+      Index: 13
+      NameLower: FOOD_DRILL_MEAT_NAME_L
+      NameString: Latticed Sinew
+    - ID: FOOD_M_BEETLE
+      Index: 14
+      NameLower: FOOD_BEETLE_MEAT_NAME_L
+      NameString: Crunchy Wings
+    - ID: FOOD_M_BALL
+      Index: 15
+      NameLower: FOOD_BALL_MEAT_NAME_L
+      NameString: Lumpy Brainstem
+    - ID: FOOD_M_DIGGER
+      Index: 16
+      NameLower: FOOD_DIGGER_MEAT_NAME_L
+      NameString: Dirty Meat
+    - ID: FOOD_M_MEAT
+      Index: 17
+      NameLower: FOOD_GENERIC_MEAT_NAME_L
+      NameString: Meaty Chunks
+  Plant:
+    - ID: FOOD_P_LUSHWILD
+      Index: 0
+      NameLower: FOOD_PLANT_LUSH_WILD_NAME_L
+      NameString: Impulse Beans
+    - ID: FOOD_P_HOTWILD
+      Index: 1
+      NameLower: FOOD_PLANT_HOT_WILD_NAME_L
+      NameString: Fireberry
+    - ID: FOOD_P_COLDWILD
+      Index: 2
+      NameLower: FOOD_PLANT_COLD_WILD_NAME_L
+      NameString: Frozen Tubers
+    - ID: FOOD_P_TOXWILD
+      Index: 3
+      NameLower: FOOD_PLANT_TOX_WILD_NAME_L
+      NameString: Jade Peas
+    - ID: FOOD_P_RADWILD
+      Index: 4
+      NameLower: FOOD_PLANT_RAD_WILD_NAME_L
+      NameString: Grahberry
+    - ID: FOOD_P_DUSTWILD
+      Index: 5
+      NameLower: FOOD_PLANT_DUST_WILD_NAME_L
+      NameString: Aloe Flesh
+    - ID: FOOD_P_GLITCH
+      Index: 6
+      NameLower: FOOD_PLANT_GLITCH_NAME_L
+      NameString: Hexaberry

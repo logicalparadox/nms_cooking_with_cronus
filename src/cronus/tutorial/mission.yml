@@ -1,0 +1,105 @@
+Include:
+  - ./dialog.yml
+
+LanguageKeys:
+  <%= Atlas.LocKey('TUT_MESSAGE') %>: |
+    <HIGHLIGHT>Iteration Cronus<> <TITLE>has new services available!<> 
+    Visit their kiosk to learn more
+
+Mission:
+  $Table: CoreMissionTable
+  MissionID: <%= Atlas.Metadata.Name %>
+  MissionClass: Secondary
+  AutoStart: AllModes
+
+  ScanEvents:
+    - Name: <%= Atlas.ScanEvent('CHEF') %>
+      ForceInteraction: <%= Atlas.Dialog('HI') %>
+      ForceInteractionType: ExoticExtra6
+      ForceRestartInteraction: true
+      ForceOverridesAll: true
+      AlwaysShow: true
+      ClearForcedInteractionOnCompletion: true
+      EventStartType: Special
+      EventEndType: Interact
+      BuildingLocation: Nearest
+      BuildingType: Nexus
+      MarkerLabel: <%= Atlas.Mod.LocKey('JOB_UI_TITLE_PREFIX') %>
+      MarkerIcon: TEXTURES/UI/HUD/ICONS/MISSIONS/MISSION.ANOMALYSTATION.DDS
+
+  Rewards:
+    - Id: <%= Atlas.Reward('DONE') %>
+      List:
+        # enable product offering dialog mission
+        - $: GcRewardModifyStat
+          Stat: <%= Atlas.Mod.Stat('POE') %>
+          Amount: 1
+          ModifyType: Set
+
+        # trigger exit mission sequence loop
+        - $: GcRewardMissionMessage
+          MessageID: <%= Atlas.Message('DONE') %>
+
+        # show tutorial message
+        - $: GcRewardMission
+          Mission: <%= Atlas.Config.MissionRef.TutorialDone %>
+
+  StartIsCancel: true
+  StartConditionTest: AnyFalse # if any false, this mission will NOT be active
+  StartingConditions:
+    - $: GcMissionConditionLocation
+      MissionPlayerLocation: InNexus
+
+    - $: GcMissionConditionStatLevel
+      Stat: <%= Atlas.Mod.Stat('TUT') %>
+      Level: 0
+      Test: Equal
+
+  Stages:
+    - $: GcMissionSequenceGroup
+      Silent: true
+      ConditionTest: AnyTrue
+      Conditions:
+        - $: GcMissionConditionMissionMessage
+          Message: <%= Atlas.Message('DONE') %>
+      Stages:
+        - $: GcMissionSequenceStartScanEvent
+          Event: <%= Atlas.ScanEvent('CHEF') %>
+
+        - $: GcMissionSequenceGroup
+          Silent: true
+          RepeatLogic: Loop
+          PrefixTitle: true
+          PrefixTitleText: <%= Atlas.Mod.LocKey('JOB_UI_TITLE_PREFIX') %>
+          HasCategoryOverride: true
+          OverrideCategory: Urgent
+          Icon: TEXTURES/UI/HUD/ICONS/MISSIONS/MISSION.WHEAT.DDS
+          Stages:
+            - $: GcMissionSequenceShowMessage
+              Message: <%= Atlas.LocKey('TUT_MESSAGE') %>
+              Category: Urgent
+              Time: 8
+              OSDTime: 0
+
+            # wait before looping
+            - $: GcMissionSequenceWait
+              Time: 35
+
+    # dialog finished
+    - $: GcMissionSequenceEndScanEvent
+      Event: <%= Atlas.ScanEvent('CHEF') %>
+
+    # show non-dialog-flavor tutorial
+    # - $: GcMissionSequenceDetailMessage
+    #   Title: <%= Atlas.Config.LangRef.ChefName %>
+    #   Description: <%= Atlas.LocKey('INTRO_DESC') %>
+    #   Image: NEXUS_DETAIL
+    #   Points:
+    #     - Text: <%= Atlas.LocKey('INTRO_P1') %>
+    #     - Text: <%= Atlas.LocKey('INTRO_P2') %>
+    #     - Text: <%= Atlas.LocKey('INTRO_P3') %>
+
+    # disable mission repeating
+    - $: GcMissionSequenceModifyStat
+      Stat: <%= Atlas.Mod.Stat('TUT') %>
+      Amount: 1

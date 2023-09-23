@@ -1,0 +1,134 @@
+# <% const Menu = Atlas.Config.DailyMenuMatrix; %>
+# <% const Exchange = Atlas.Config.DailyProductExchange; %>
+# <% const Market = Atlas.Config.IngredientMarket; %>
+
+MissionSchedules:
+  - RecurrenceType:
+      $: GcDailyRecurrence
+      RecurrenceHour: 3
+    MissionIDs:
+      - <%= Atlas.Metadata.Name %>
+
+Rewards:
+  # <% if (Atlas.Config.EnableDebug) { %>
+  - Id: <%= Atlas.Reward('CHAT') %>
+    RewardChoice: SelectAlways
+    List:
+      # <% Menu.DailyFavorite.forEach((id, i) => { %>
+      # <% const favorite = Exchange.find((fave) => fave.Delivery.Product === id); %>
+      - $: GcRewardSendChatMessage
+        StatusMessageId: <%= Atlas.Mod.Prefix('DEBUG') %>
+        CustomText: '<%= Atlas.InlineLang(`RST_DAY_${i}`, `Chef Daily Reset: Rolled Scenario ${i + 1}`) %>'
+      # <% }); %>
+  # <% } %>
+
+  # roll a new daily favored dish
+  - Id: <%= Atlas.Reward('API') %>
+    RewardChoice: SelectAlways
+    List:
+      # <% Menu.DailyFavorite.forEach((id) => { %>
+      # <% const favorite = Exchange.find((fave) => fave.Delivery.Product === id); %>
+      - $: GcRewardModifyStat
+        Stat: <%= Atlas.Mod.Stat('API') %>
+        Amount: <%= favorite.Index %>
+        ModifyType: Set
+      # <% }); %>
+
+  # <% Object.keys(Market.Pricing).forEach((type) => { %>
+  # <% const spec = Market.Pricing[type]; %>
+  # <% ;['S', 'B'].forEach((tx) => { %>
+  - Id: <%= Atlas.Reward(`${spec.Key}_${tx}`) %>
+    RewardChoice: SelectAlways
+    List:
+      # <% Menu[type][tx].forEach((id) => { %>
+      # <% const food = Market[type].find((f) => f.ID === id); %>
+      - $: GcRewardModifyStat
+        Stat: <%= Atlas.Mod.Stat(`${spec.Key}_${tx}`) %>
+        Amount: <%= food.Index %>
+        ModifyType: Set
+      # <% }); %>
+
+  # <% }); %>
+  # <% }); %>
+
+  - Id: <%= Atlas.Reward('ECO_B') %>
+    RewardChoice: SelectAlways
+    List:
+      # <% Menu.MarketForces.forEach((spec) => { %>
+      - $: GcRewardModifyStat
+        Stat: <%= Atlas.Mod.Stat('ECO_B') %>
+        Amount: <%= spec.BuyIndex %>
+        ModifyType: Set
+      # <% }); %>
+
+  - Id: <%= Atlas.Reward('ECO_S') %>
+    RewardChoice: SelectAlways
+    List:
+      # <% Menu.MarketForces.forEach((spec) => { %>
+      - $: GcRewardModifyStat
+        Stat: <%= Atlas.Mod.Stat('ECO_S') %>
+        Amount: <%= spec.SellIndex %>
+        ModifyType: Set
+      # <% }); %>
+
+  - Id: <%= Atlas.Reward('STOCK') %>
+    List:
+      # <% Object.keys(Market.Pricing).forEach((type) => { %>
+      # <% const spec = Market.Pricing[type]; %>
+      - $: GcRewardModifyStat
+        Stat: <%= Atlas.Mod.Stat(`${spec.Key}_C`) %>
+        Amount: 0
+        ModifyType: Set
+      # <% }); %>
+
+Mission:
+  $Table: RecurringMissionTable
+  MissionID: <%= Atlas.Metadata.Name %>
+  MissionClass: Guide
+
+  Rewards:
+    # reset everything that keeps track of today's state
+    - Id: <%= Atlas.Reward('RESET') %>
+      List:
+        # stop all previous days missions
+        - $: GcRewardMissionMessage
+          MessageID: <%= Atlas.Mod.Message('RESET_DAY') %>
+
+        # cronos delivery hello = false
+        - $: GcRewardModifyStat
+          Stat: <%= Atlas.Mod.Stat('CDH') %>
+          Amount: 0
+          ModifyType: Set
+
+  Stages:
+    # Send shutdown signal to existing quests
+    # reset all daily variables
+    - $: GcMissionSequenceReward
+      Reward: <%= Atlas.Reward('RESET') %>
+
+    # chat message
+    # <% if (Atlas.Config.EnableDebug) { %>
+    - $: GcMissionSequenceReward
+      Reward: <%= Atlas.Reward('CHAT') %>
+    # <% } %>
+
+    # roll a new product offering
+    - $: GcMissionSequenceReward
+      Reward: <%= Atlas.Reward('API') %>
+
+    # <% Object.keys(Market.Pricing).forEach((type) => { %>
+    # <% const spec = Market.Pricing[type]; %>
+    - $: GcMissionSequenceReward
+      Reward: <%= Atlas.Reward(`${spec.Key}_B`) %>
+    - $: GcMissionSequenceReward
+      Reward: <%= Atlas.Reward(`${spec.Key}_S`) %>
+    # <% }); %>
+
+    - $: GcMissionSequenceReward
+      Reward: <%= Atlas.Reward('ECO_B') %>
+
+    - $: GcMissionSequenceReward
+      Reward: <%= Atlas.Reward('ECO_S') %>
+
+    - $: GcMissionSequenceReward
+      Reward: <%= Atlas.Reward('STOCK') %>

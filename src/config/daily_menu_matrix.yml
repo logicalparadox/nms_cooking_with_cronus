@@ -1,0 +1,276 @@
+DailyMenuMatrix:
+  DailyFavorite:
+    - FOOD_CM_JHOT
+    - FOOD_W_SWEETM
+    - FOOD_EGGPIE_MU
+    - FOOD_CG_CHOC
+    - FOOD_PIE_MCUST
+    - FOOD_DNUT_SCUST
+    - FOOD_CM_JHOT
+    - FOOD_PIE_MCUST
+    - FOOD_W_SWEETM
+    - FOOD_CG_CHOC
+    - FOOD_EGGPIE_MU
+    - FOOD_W_SWEETM
+    - FOOD_PIE_MCUST
+    - FOOD_DNUT_SCUST
+    - FOOD_CM_JHOT
+    - FOOD_PIE_MCUST
+    - FOOD_EGGPIE_MU
+    - FOOD_CM_JHOT
+    - FOOD_CG_CHOC
+    - FOOD_EGGPIE_MU
+    - FOOD_DNUT_SCUST
+    - FOOD_DNUT_SCUST
+    - FOOD_CG_CHOC
+    - FOOD_W_SWEETM
+  Creature:
+    B:
+      - FOOD_V_COW
+      - FOOD_V_CAT
+      - FOOD_V_STRIDER
+      - FOOD_V_ROBOT
+      - FOOD_V_CRAB
+      - FOOD_V_REX
+      - FOOD_V_STRIDER
+      - FOOD_V_MILK
+      - FOOD_V_EGG
+      - FOOD_V_BLOB
+      - FOOD_V_ROBOT
+      - FOOD_V_MOLE
+      - FOOD_V_FLYER
+      - FOOD_V_GEK
+      - FOOD_V_BONE
+      - FOOD_V_FLYER
+      - FOOD_V_DIPLO
+      - FOOD_V_REX
+      - FOOD_V_BLOB
+      - FOOD_V_CRAB
+      - FOOD_V_DIPLO
+      - FOOD_V_GEK
+      - FOOD_V_COW
+      - FOOD_V_BONE
+    S:
+      - FOOD_V_STRIDER
+      - FOOD_V_FLYER
+      - FOOD_V_CAT
+      - FOOD_V_MOLE
+      - FOOD_V_MOLE
+      - FOOD_V_COW
+      - FOOD_V_GEK
+      - FOOD_V_DIPLO
+      - FOOD_V_REX
+      - FOOD_V_DIPLO
+      - FOOD_V_BONE
+      - FOOD_V_STRIDER
+      - FOOD_V_BLOB
+      - FOOD_V_ROBOT
+      - FOOD_V_REX
+      - FOOD_V_EGG
+      - FOOD_V_CRAB
+      - FOOD_V_GEK
+      - FOOD_V_CAT
+      - FOOD_V_ROBOT
+      - FOOD_V_FLYER
+      - FOOD_V_BONE
+      - FOOD_V_MILK
+      - FOOD_V_CRAB
+  Plant:
+    B:
+      - FOOD_P_LUSHWILD
+      - FOOD_P_COLDWILD
+      - FOOD_P_DUSTWILD
+      - FOOD_P_RADWILD
+      - FOOD_P_HOTWILD
+      - FOOD_P_LUSHWILD
+      - FOOD_P_DUSTWILD
+      - FOOD_P_DUSTWILD
+      - FOOD_P_DUSTWILD
+      - FOOD_P_TOXWILD
+      - FOOD_P_RADWILD
+      - FOOD_P_LUSHWILD
+      - FOOD_P_GLITCH
+      - FOOD_P_GLITCH
+      - FOOD_P_COLDWILD
+      - FOOD_P_TOXWILD
+      - FOOD_P_LUSHWILD
+      - FOOD_P_TOXWILD
+      - FOOD_P_HOTWILD
+      - FOOD_P_TOXWILD
+      - FOOD_P_HOTWILD
+      - FOOD_P_GLITCH
+      - FOOD_P_RADWILD
+      - FOOD_P_COLDWILD
+    S:
+      - FOOD_P_TOXWILD
+      - FOOD_P_HOTWILD
+      - FOOD_P_GLITCH
+      - FOOD_P_TOXWILD
+      - FOOD_P_TOXWILD
+      - FOOD_P_DUSTWILD
+      - FOOD_P_RADWILD
+      - FOOD_P_LUSHWILD
+      - FOOD_P_HOTWILD
+      - FOOD_P_DUSTWILD
+      - FOOD_P_COLDWILD
+      - FOOD_P_COLDWILD
+      - FOOD_P_RADWILD
+      - FOOD_P_HOTWILD
+      - FOOD_P_DUSTWILD
+      - FOOD_P_LUSHWILD
+      - FOOD_P_GLITCH
+      - FOOD_P_RADWILD
+      - FOOD_P_COLDWILD
+      - FOOD_P_GLITCH
+      - FOOD_P_LUSHWILD
+      - FOOD_P_DUSTWILD
+      - FOOD_P_GLITCH
+      - FOOD_P_LUSHWILD
+  Meat:
+    B:
+      - FOOD_M_FIEND
+      - FOOD_M_DIGGER
+      - FOOD_M_DRILL
+      - FOOD_M_BEETLE
+      - FOOD_M_DIGGER
+      - FOOD_M_FISH
+      - FOOD_M_REX
+      - FOOD_M_COW
+      - FOOD_M_BLOB
+      - FOOD_M_FLYER
+      - FOOD_M_BALL
+      - FOOD_M_DIPLO
+      - FOOD_M_MOLE
+      - FOOD_M_BONE
+      - FOOD_M_CRAB
+      - FOOD_M_FISH
+      - FOOD_M_CAT
+      - FOOD_M_FLYER
+      - FOOD_M_CRAB
+      - FOOD_M_BONE
+      - FOOD_M_REX
+      - FOOD_M_MEAT
+      - FOOD_M_GEK
+      - FOOD_M_STRIDER
+    S:
+      - FOOD_M_DIGGER
+      - FOOD_M_GEK
+      - FOOD_M_BONE
+      - FOOD_M_COW
+      - FOOD_M_FLYER
+      - FOOD_M_MOLE
+      - FOOD_M_BEETLE
+      - FOOD_M_CRAB
+      - FOOD_M_CAT
+      - FOOD_M_STRIDER
+      - FOOD_M_CAT
+      - FOOD_M_FIEND
+      - FOOD_M_DIPLO
+      - FOOD_M_BLOB
+      - FOOD_M_STRIDER
+      - FOOD_M_DRILL
+      - FOOD_M_FLYER
+      - FOOD_M_CRAB
+      - FOOD_M_FISH
+      - FOOD_M_REX
+      - FOOD_M_BALL
+      - FOOD_M_REX
+      - FOOD_M_MOLE
+      - FOOD_M_MEAT
+  MarketForces:
+    - Id: CreatureSell
+      SellIndex: 1
+      BuyIndex: 0
+      Item: FOOD_V_STRIDER
+    - Id: PlantBuy
+      SellIndex: 0
+      BuyIndex: 3
+      Item: FOOD_P_COLDWILD
+    - Id: CreatureSell
+      SellIndex: 1
+      BuyIndex: 0
+      Item: FOOD_V_CAT
+    - Id: CreatureBuy
+      SellIndex: 0
+      BuyIndex: 1
+      Item: FOOD_V_ROBOT
+    - Id: PlantSell
+      SellIndex: 3
+      BuyIndex: 0
+      Item: FOOD_P_TOXWILD
+    - Id: CreatureBuy
+      SellIndex: 0
+      BuyIndex: 1
+      Item: FOOD_V_REX
+    - Id: MeatBuy
+      SellIndex: 0
+      BuyIndex: 2
+      Item: FOOD_M_REX
+    - Id: PlantBuy
+      SellIndex: 0
+      BuyIndex: 3
+      Item: FOOD_P_DUSTWILD
+    - Id: PlantSell
+      SellIndex: 3
+      BuyIndex: 0
+      Item: FOOD_P_HOTWILD
+    - Id: CreatureBuy
+      SellIndex: 0
+      BuyIndex: 1
+      Item: FOOD_V_BLOB
+    - Id: CreatureSell
+      SellIndex: 1
+      BuyIndex: 0
+      Item: FOOD_V_BONE
+    - Id: MeatBuy
+      SellIndex: 0
+      BuyIndex: 2
+      Item: FOOD_M_DIPLO
+    - Id: PlantBuy
+      SellIndex: 0
+      BuyIndex: 3
+      Item: FOOD_P_GLITCH
+    - Id: MeatBuy
+      SellIndex: 0
+      BuyIndex: 2
+      Item: FOOD_M_BONE
+    - Id: PlantSell
+      SellIndex: 3
+      BuyIndex: 0
+      Item: FOOD_P_DUSTWILD
+    - Id: MeatSell
+      SellIndex: 2
+      BuyIndex: 0
+      Item: FOOD_M_DRILL
+    - Id: MeatSell
+      SellIndex: 2
+      BuyIndex: 0
+      Item: FOOD_M_FLYER
+    - Id: MeatBuy
+      SellIndex: 0
+      BuyIndex: 2
+      Item: FOOD_M_FLYER
+    - Id: MeatSell
+      SellIndex: 2
+      BuyIndex: 0
+      Item: FOOD_M_FISH
+    - Id: CreatureBuy
+      SellIndex: 0
+      BuyIndex: 1
+      Item: FOOD_V_CRAB
+    - Id: PlantSell
+      SellIndex: 3
+      BuyIndex: 0
+      Item: FOOD_P_LUSHWILD
+    - Id: MeatSell
+      SellIndex: 2
+      BuyIndex: 0
+      Item: FOOD_M_REX
+    - Id: PlantBuy
+      SellIndex: 0
+      BuyIndex: 3
+      Item: FOOD_P_RADWILD
+    - Id: CreatureSell
+      SellIndex: 1
+      BuyIndex: 0
+      Item: FOOD_V_CRAB

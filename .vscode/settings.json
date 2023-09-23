@@ -1,0 +1,20 @@
+{
+  "deno.enable": true,
+  "deno.unstable": true,
+  "deno.config": "./deno.jsonc",
+  "deno.suggest.imports.hosts": {
+    "https://deno.land": false
+  },
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "editor.defaultFormatter": "denoland.vscode-deno",
+  "[typescript]": {
+    "editor.defaultFormatter": "denoland.vscode-deno"
+  },
+  "deno.lint": true,
+  "typescript.validate.enable": false,
+  "javascript.validate.enable": false,
+  "Lua.diagnostics.globals": [
+    "NMS_MOD_DEFINITION_CONTAINER"
+  ]
+}

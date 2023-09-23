@@ -1,0 +1,19 @@
+Reward:
+  DeliveryMult: 1.15
+  Currency:
+    Mission:
+      Nanites: 500
+      Specials: 100
+    Bonus:
+      Nanites: 2500
+      Specials: 700
+  FoodQuantity:
+    SM:
+      Min: 5
+      Max: 15
+    MD:
+      Min: 20
+      Max: 30
+    LG:
+      Min: 35
+      Max: 45

@@ -1,0 +1,26 @@
+Build:
+  # first offering a tutorial given by cronus to teach how to use forgotten songs
+  - $: IncludeMission
+    Source: ./first_offering/mission.yml
+    Metadata:
+      Name: ALCH_CHEF_OFFER
+      ID: CHEFOF
+
+  # whalesong encounter globals
+  - $: IncludeGeneric
+    Source: ./encounter/globals.yml
+
+  # offering encounter mission and dialog
+  - $: IncludeMission
+    Source: ./encounter/mission.yml
+    Metadata:
+      Name: ALCH_CHEF_WHALE
+      ID: CHEFWS
+
+  # offering "refund" - switches an "actived song" back to dormant state
+  # if the player abandons the encounter cycle
+  - $: IncludeMission
+    Source: ./encounter/refund.yml
+    Metadata:
+      Name: ALCH_CHEF_SONG_R
+      ID: CHEFSR

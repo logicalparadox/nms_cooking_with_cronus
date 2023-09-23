@@ -1,0 +1,11 @@
+{
+  "tasks": {
+    "menu": "deno run -A ./scripts/build_menu.ts"
+  },
+  "fmt": {
+    "options": {
+      "lineWidth": 120,
+      "indentWidth": 2
+    }
+  }
+}

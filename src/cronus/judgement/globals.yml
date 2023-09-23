@@ -1,0 +1,52 @@
+Rewards:
+  # start judgement
+  - Id: <%= Atlas.Mod.Reward('J_WAIT') %>
+    List:
+      - $: GcRewardModifyStat
+        Stat: <%= Atlas.Mod.Stat('POE') %>
+        Amount: 0
+        ModifyType: Set
+      - $: GcRewardMission
+        Mission: <%= Atlas.Config.MissionRef.WaitOnJudgement %>
+
+  # end judgement
+  - Id: <%= Atlas.Mod.Reward('J_DONE') %>
+    List:
+      - $: GcRewardModifyStat
+        Stat: <%= Atlas.Mod.Stat('POE') %>
+        Amount: 1
+        ModifyType: Set
+
+Dialog:
+  # <% Atlas.Config.JudgementFlow.forEach((flow) => { %>
+  - Id: EXOTIC_CHEF
+    ProgressionIndex: 0
+    Type: ExoticExtra6
+    TranslationBrackets: true
+    AdvancedInteractionFlow:
+      - Text: <%= flow.Text %>
+        IsAlien: <%= flow.IsAlien %>
+    Options:
+      # <% ;[1, 2, 3].forEach((n) => { %>
+      - Name: ALL_REQUEST_LEAVE
+        Text: FTH_NEXUSCHEF_RES_NONE1
+        IsAlien: true
+        Cost: C_NEXUSCHEF<%= n %>
+        DisplayCost: true
+        MarkInteractionComplete: '<%= (n === 1 ? false : true) %>'
+        KeepOpen: true
+        # NextInteraction: ?<%= Atlas.Mod.Dialog('JUDGE') %>
+        Rewards:
+          - R_CHEF_JUDGE
+      # <% }) %>
+      - Name: ALL_REQUEST_LEAVE
+        Text: <%= flow.LeaveText %>
+        IsAlien: <%= flow.LeaveIsAlien %>
+        DisplayCost: true
+        SelectedOnBackOut: true
+        MarkInteractionComplete: true
+        #NextInteraction: <%= Atlas.Mod.Dialog('HOME') %>
+        KeepOpen: false
+        Rewards:
+          - <%= Atlas.Mod.Reward('J_DONE') %>
+  # <% }) %>

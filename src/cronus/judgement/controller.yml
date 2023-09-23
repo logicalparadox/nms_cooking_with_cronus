@@ -1,0 +1,72 @@
+Mission:
+  $Table: CoreMissionTable
+  MissionID: <%= Atlas.Metadata.Name %>
+  MissionClass: Guide
+
+  ScanEvents:
+    - Name: <%= Atlas.ScanEvent('CHEF') %>
+      ForceInteractionType: ExoticExtra6
+      AlwaysShow: true
+      ClearForcedInteractionOnCompletion: false
+      DisableMultiplayerSync: true
+      EventStartType: Special
+      EventEndType: Interact
+      EventPriority: Regular
+      AllowOverriddenBuildings: true
+      BuildingLocation: Nearest
+      BuildingType: Nexus
+
+      MarkerLabel: '<%= Atlas.InlineLang("CHEF_LABEL", "Present food products") %>'
+      MarkerIcon: TEXTURES/UI/FRONTEND/ICONS/WIKI/WIKI.COOKING.ON.DDS
+
+  Rewards:
+    - Id: <%= Atlas.Reward('RDY') %>
+      List:
+        - $: GcRewardSendChatMessage
+          StatusMessageId: <%= Atlas.Mod.Prefix('CHAT') %>
+          CustomText: '<%= Atlas.InlineLang(`CHAT_RDY`, `<VISOR>Cronus<>: -{{ ${Atlas.Config.ReadyChat} }}-`) %>'
+
+    - Id: <%= Atlas.Reward('BYE') %>
+      List:
+        - $: GcRewardSendChatMessage
+          StatusMessageId: <%= Atlas.Mod.Prefix('CHAT') %>
+          CustomText: '<%= Atlas.InlineLang(`CHAT_BYE`, `<VISOR>Cronus<>: -{{ ${Atlas.Config.LeaveChat} }}-`) %>'
+
+  Stages:
+    # give time for daily menu to handle hi event
+    - $: GcMissionSequenceWait
+      Time: 0.5
+
+    - $: GcMissionSequenceStartScanEvent
+      Event: <%= Atlas.ScanEvent('CHEF') %>
+
+    - $: GcMissionSequenceGroup
+      Silent: true
+      ConditionTest: AnyTrue
+      Conditions:
+        - $: GcMissionConditionStatLevel
+          Stat: <%= Atlas.Mod.Stat('POE') %>
+          Level: 1
+          Test: Equal
+      Stages:
+        - $: GcMissionSequenceWait
+          Time: 1.5
+
+        - $: GcMissionSequenceReward
+          Reward: <%= Atlas.Reward('RDY') %>
+
+        - $: GcMissionSequenceWaitForConditions
+          ConditionTest: AnyFalse
+          Conditions:
+            - $: GcMissionConditionNearScanEvent
+              Event: <%= Atlas.ScanEvent('CHEF') %>
+              Distance: 25
+
+        - $: GcMissionSequenceReward
+          Reward: <%= Atlas.Reward('BYE') %>
+
+        - $: GcMissionSequenceReward
+          Reward: <%= Atlas.Mod.Reward('J_DONE') %>
+
+    - $: GcMissionSequenceEndScanEvent
+      Event: <%= Atlas.ScanEvent('CHEF') %>

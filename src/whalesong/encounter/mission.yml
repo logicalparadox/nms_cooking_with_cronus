@@ -1,0 +1,181 @@
+Include:
+  - ./dialog.yml
+
+LanguageKeys:
+  <%= Atlas.LocKey('NEARBY_MSG1') %>: |
+    <SPECIAL>Offering of a Forgotten Song<> <TITLE>seeking harmonic partner<>
+    The song is eminating... %SIGNAL%
+  <%= Atlas.LocKey('NEARBY_MSG2') %>: |
+    <SPECIAL>Offering of a Forgotten Song<> <TITLE>seeking harmonic partner<>
+    Return to your ship to broadcast the request
+  <%= Atlas.LocKey('NEARBY_MSG3') %>: |
+    <SPECIAL>Offering of a Forgotten Song<> <TITLE>seeking harmonic partner<>
+    Activate the <TECHNOLOGY>Pulse Drive<> to broadcast the request
+  <%= Atlas.LocKey('NEARBY_MSG4') %>: |
+    <FUEL>Song Silenced<> ~ <TITLE>Discordant tonal interference detected<>
+    Answer the <STELLAR>Communicator<> to resolve conflicting signals
+
+Mission:
+  $Table: SpacePOIMissionTable
+  MissionID: <%= Atlas.Metadata.Name %>
+  MissionClass: Guide
+  PrefixTitle: true
+
+  MissionIcon: TEXTURES/UI/FRONTEND/ICONS/MISSIONS/MISSION.BIOFRIG.ON.DDS
+  MissionIconSelected: TEXTURES/UI/FRONTEND/ICONS/MISSIONS/MISSION.BIOFRIG.ON.DDS
+  MissionIconNotSelected: TEXTURES/UI/FRONTEND/ICONS/MISSIONS/MISSION.BIOFRIG.OFF.DDS
+
+  CancelConditionTest: AnyTrue
+  CancelingConditions:
+    - $: GcMissionConditionMissionMessage
+      Message: <%= Atlas.Message('ERR') %>
+
+  Rewards:
+    - Id: <%= Atlas.Reward('END') %>
+      List:
+        - $: GcRewardEndFrigateFlyby
+        - $: GcRewardMissionMessage
+          MessageID: <%= Atlas.Message('DONE') %>
+        - $: GcRewardMissionMessage
+          MessageID: <%= Atlas.Mod.Message('DREAM') %>
+    - Id: <%= Atlas.Reward('EXIT') %>
+      List:
+        - $: GcRewardEndFrigateFlyby
+        - $: GcRewardMissionMessage
+          MessageID: <%= Atlas.Message('DONE') %>
+
+  Stages:
+    - $: GcMissionSequenceGroup
+      Silent: true
+
+      # cancel all if you warp or use a portal
+      # refund mission will handle switching product to inactive state
+      ConditionTest: AnyTrue
+      Conditions:
+        - $: GcMissionConditionMissionMessageWarp
+        - $: GcMissionConditionMissionMessagePortal
+
+      Stages:
+        - $: GcMissionSequenceGroup
+          Silent: true
+
+          # exit group if we arrive
+          ConditionTest: AnyTrue
+          Conditions:
+            - $: GcMissionConditionMissionMessage
+              Message: <%= Atlas.Message('ARVL') %>
+
+          Stages:
+            - $: GcMissionSequenceGroup
+              Silent: true
+
+              ConditionTest: AnyTrue
+              Conditions:
+                - $: GcMissionConditionOnMultiplayerMission
+
+              Stages:
+                - $: GcMissionSequenceGroup
+                  Silent: true
+
+                  Icon: TEXTURES/UI/HUD/ICONS/MISSIONS/MISSION.BIOFRIG.DDS
+                  PrefixTitle: true
+                  PrefixTitleText: <%= Atlas.InlineLang("TITLE", "Harmonizing with Forgotten Song") %>
+                  HasCategoryOverride: true
+                  OverrideCategory: Urgent
+
+                  # check if beacon was destroyed before arriving
+                  ConditionTest: AnyFalse
+                  Conditions:
+                    - $: GcMissionConditionHasProduct
+                      Product: <%= Atlas.Mod.Product("SONG_X") %>
+                      Amount: 1
+                      ForceSearchFreighterAndChests: true
+                      SearchEveryShip: true
+
+                  Stages:
+                    - $: GcMissionSequenceShowMessage
+                      OSDMessage: <%= Atlas.InlineLang("START_OSD", "OFFERING OF A FORGOTTEN SONG <HIGHLIGHT>//<> <TRADE>HARMONIZING<>") %>
+                      OSDUseMissionIcon: true
+                      Time: 0
+                      OSDTime: 4
+
+                    - $: GcMissionSequenceCreateSpecificPulseEncounter
+                      Message: <%= Atlas.LocKey('NEARBY_MSG1') %>
+                      MessageNoShip: <%= Atlas.LocKey('NEARBY_MSG2') %>
+                      MessageNotPulsing: <%= Atlas.LocKey('NEARBY_MSG3') %>
+                      MessageSignalBlocked: <%= Atlas.LocKey('NEARBY_MSG4') %>
+                      PulseEncounterID: <%= Atlas.Mod.PulseEncounter('SONG') %>
+                      MinTimeInPulse: 5.5
+                      Silent: false
+
+                    # got here if arrived at the pulse encounter
+                    - $: GcMissionSequenceBroadcastMessage
+                      MessageID: <%= Atlas.Message('ARVL') %>
+                    - $: GcMissionSequenceWait
+                      Time: 2
+
+                # got here if you destroyed the active beacon, time to exit
+                - $: GcMissionSequenceBroadcastMessage
+                  MessageID: <%= Atlas.Message('ERR') %>
+                - $: GcMissionSequenceWait
+                  Time: 2
+
+            # got here if on multiplayer mission, notify and exit
+            - $: GcMissionSequenceShowMessage
+              OSDMessage: <%= Atlas.InlineLang("MP_ERR_OSD", "OFFERING OF A FORGOTTEN SONG <HIGHLIGHT>//<> <FUEL>ERROR ~ NEXUS MISSION INTERFERENCE<>") %>
+              OSDUseMissionIcon: true
+              Time: 0
+              OSDTime: 4
+
+            - $: GcMissionSequenceBroadcastMessage
+              MessageID: <%= Atlas.Message('ERR') %>
+            - $: GcMissionSequenceWait
+              Time: 2
+
+        - $: GcMissionSequenceGroup
+          Silent: true
+          ConditionTest: AnyTrue
+          Conditions:
+            - $: GcMissionConditionShipEngineStatus
+              EngineStatus: Pulsing
+            - $: GcMissionConditionMissionMessage
+              Message: <%= Atlas.Message('DONE') %>
+
+          Stages:
+            # if player has full roster of frigates then force communicator as HG hardcoded silence
+            # note: camera doesn't follow and dialog name of speaker is incorrect
+            - $: GcMissionSequenceGroup
+              Silent: true
+              ConditionTest: AnyFalse
+              Conditions:
+                - $: GcMissionConditionHasFreighter
+                  FreighterInCurrentSystem: DontCare
+                - $: GcMissionConditionFrigateCount
+                  FrigateCount: 30
+                  Test: Equal
+
+              Stages:
+                # give frigate a few seconds to arrive
+                - $: GcMissionSequenceWait
+                  Time: 5
+
+                # simulate the frigate making a call using the same dialog tree
+                # ability to adopt frigate disabled by dialog condition
+                - $: GcMissionSequenceCommunicator
+                  OSDMessage: UI_HAIL_BIOFRIG_OSD
+                  Comms:
+                    Dialog: <%= Atlas.Mod.Dialog('SONG') %>
+                    ShipHUDOverride: UI_HAIL_BIOFRIG_HUD
+
+            # wait to end or else the refund will switch active beacon before
+            # the player has a chance to turn it in
+            - $: GcMissionSequenceWaitForConditions
+              ConditionTest: AnyTrue
+              Conditions:
+                - $: GcMissionConditionShipEngineStatus
+                  EngineStatus: Pulsing
+                - $: GcMissionConditionMissionMessage
+                  Message: <%= Atlas.Message('DONE') %>
+
+            - $: GcMissionSequenceWait
+              Time: 2

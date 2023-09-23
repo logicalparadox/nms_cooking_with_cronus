@@ -1,0 +1,3 @@
+/.build/
+.build-opts.yml
+deno.lock

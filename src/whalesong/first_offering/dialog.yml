@@ -1,0 +1,87 @@
+Dialog:
+  - Id: <%= Atlas.Dialog('HOME') %>
+    Prop: None
+    TranslationBrackets: true
+    AdvancedInteractionFlow:
+      - $Text:
+          - My friend! You walk as if you are in a daze. Is everything alright?
+        Mood: Confused
+        IsAlien: true
+      - $Text:
+          - Cronus tilts their head inquisitively, then a smile forms across their broad face.
+          - In this moment of recognition, their mood shifts to one of unreserved glee.
+        Mood: Neutral
+      - $Text:
+          - The Sea of Stars will grant it's secrets to those who witness the harmony of songs.
+          - But knowledge hoarded is knowledge lost. You must share your story.
+          - Quickly now, before the dream fades away.
+        Mood: Positive
+        IsAlien: true
+    Options:
+      - $Name: Share your story...
+        MarkInteractionComplete: false
+        KeepOpen: true
+        NextInteraction: <%= Atlas.Dialog('PART_A') %>
+
+  - Id: <%= Atlas.Dialog('PART_A') %>
+    Prop: None
+    TranslationBrackets: true
+    AdvancedInteractionFlow:
+      - $Text:
+          - I tell Cronus of the moment I opened up my mind to the <SPECIAL>Offering of a Forgotten Song<>.
+          - I explain the guidance of the <SPECIAL>Song<> as I adjusted my ship's trajectory to an unknown point in space.
+        Mood: Neutral
+      - $Text:
+          - And I speak of the choir, not just from the offering, but from my entire ship as I engaged the <TECHNOLOGY>Pulse Drive<> to our destination.
+        Mood: Neutral
+        AudioEvent: FRIGATE_LIVING_TALK
+    Options:
+      - $Name: Continue...
+        MarkInteractionComplete: false
+        KeepOpen: true
+        NextInteraction: <%= Atlas.Dialog('PART_B') %>
+
+  - Id: <%= Atlas.Dialog('PART_B') %>
+    Prop: None
+    TranslationBrackets: true
+    AdvancedInteractionFlow:
+      - $Text:
+          - I describe the majestic creature bathed in stardust that came to answer the call of harmony.
+          - As I describe the experience, each moment of the dream returns to me.
+      - $Text:
+          - In this moment, I can still hear the <VISOR>WHALESONG HARMONY<>.
+          - What was once a hazy dream manifests as tangible memories, my mind commiting them to permanence.
+        AudioEvent: FRIGATE_LIVING_REVEAL
+      - $Text:
+          - ...to share such a boon is remarkable!
+        IsAlien: true
+        Mood: VeryPositive
+      - $Text:
+          - Cronus smiles, realizing I only just returned to the conversation from the depths of my memories.
+        Mood: Positive
+      - $Text:
+          - There are many more <SPECIAL>Forgotten Songs<> the galaxy has yet to share with us. When you are ready I will help you find them.
+          - Also, please accept this gift for a story well told.
+        IsAlien: true
+        Mood: Positive
+    Options:
+      - $Name: Accept gift
+        MarkInteractionComplete: true
+        KeepOpen: false
+        Rewards:
+          - <%= Atlas.Mod.Reward('J_DONE') %>
+          - Id: <%= Atlas.Reward('THANKS') %>
+            List:
+              - $: GcRewardMoney
+                AmountMin: 5000
+                AmountMax: 5000
+                RoundNumber: true
+                Currency: Specials
+              - $: GcRewardSpecificProduct
+                ID: NIPNIPBUDS
+                AmountMin: 16
+                AmountMax: 16
+              - $: GcRewardModifyStat
+                Stat: <%= Atlas.Mod.Stat('LORE') %>
+                Amount: <%= Atlas.Config.StoryProgress.WhalesongReturn %>
+                ModifyType: Set

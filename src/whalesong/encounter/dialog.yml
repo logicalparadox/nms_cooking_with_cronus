@@ -1,0 +1,259 @@
+LanguageKeys:
+  <%= Atlas.LocKey('PROMPT') %>: I accept, Traveler. I want to see you more clearly. Share with me the song of our future...
+  <%= Atlas.LocKey('TECH_RES') %>: A gift of knowledge granted. It has been worth the wait to meet you, Traveller. This will recur, when you are ready.
+  <%= Atlas.LocKey('SHIP_RES') %>: A gift of companionship granted. Perhaps we will meet again Traveler, in a different song.
+
+Dialog:
+  - Id: <%= Atlas.Mod.Dialog('SONG') %>
+    TranslationBrackets: true
+    AdvancedInteractionFlow:
+      - Text: UI_FIRST_BIOFRIG_1_DESC
+        AudioEvent: FRIGATE_LIVING_TALK
+      - Text: UI_FIRST_BIOFRIG_3_DESC
+        AudioEvent: FRIGATE_LIVING_TALK
+      - Text: UI_FIRST_BIOFRIG_2_LANG
+        IsAlien: true
+        AudioEvent: FRIGATE_LIVING_TALK
+    Options:
+      - $Name: Give
+        NextInteraction: <%= Atlas.Dialog('DREAM') %>
+        Cost:
+          Id: <%= Atlas.Cost('SONG_X') %>
+          Cost:
+            $: GcCostProduct
+            Id: <%= Atlas.Mod.Product('SONG_X') %>
+            Amount: 1
+
+      - Name: ALL_REQUEST_LEAVE
+        MarkInteractionComplete: true
+        KeepOpen: false
+        Rewards:
+          - <%= Atlas.Reward('EXIT') %>
+
+  - Id: <%= Atlas.Dialog('DREAM') %>
+    TranslationBrackets: true
+    AdvancedInteractionFlow:
+      - $Text: The whale-like creature opens its throat. A resonant lullaby sweeps over me, bathing my consciousness in waves of euphoria.
+        AudioEvent: FRIGATE_LIVING_TALK
+      - $Text: Come, let us dream together. Who are you in this life?
+        IsAlien: true
+        AudioEvent: FRIGATE_LIVING_TALK
+      - $Text: Its melodic voice, simulated directly in my mind, feels natural and soothing.
+        AudioEvent: FRIGATE_LIVING_TALK
+      - $Text: The creature's lullaby draws me onwards. My body is its body. I am swimming with weightless limbs, across an ocean of stars.
+        AudioEvent: FRIGATE_LIVING_TALK
+      - $Text: Your warp to my weft, woven together in the cosmic tapestry. I am glad for this song you have brought me.
+        IsAlien: true
+        AudioEvent: FRIGATE_LIVING_TALK
+    Options:
+      - Name: UI_FIRST_BIOFRIG_DREAM_OPT_END
+        $Text: The song recedes, reality re-asserting itself.
+        NextInteraction: <%= Atlas.Dialog('GIFT') %>
+
+  - Id: <%= Atlas.Dialog('GIFT') %>
+    TranslationBrackets: true
+    AdvancedInteractionFlow:
+      - $Text: I have seen your fate intertwine with mine many times over, my friend. Should I join your freighter's fleet once again?
+        IsAlien: true
+        AudioEvent: FRIGATE_LIVING_TALK
+    Options:
+      - Name: UI_FIRST_BIOFRIG_PURCHASE_OPT
+        NextInteraction: <%= Atlas.Dialog('FLEET1') %>
+        EnablingConditionTest: AnyTrue
+        EnablingConditions:
+          - $: GcMissionConditionGroup
+            ConditionTest: AnyTrue
+            Conditions:
+              - $: GcMissionConditionHasFreighter
+                FreighterInCurrentSystem: DontCare
+          - $: GcMissionConditionFrigateCount
+            FrigateCount: 30
+            Test: Equal
+
+      - $Name: Ask about fleet migrations
+        NextInteraction: <%= Atlas.Dialog('FLEETR') %>
+
+      - $Name: Ask about living ships
+        NextInteraction: <%= Atlas.Dialog('SHIP') %>
+
+      - Name: ALL_REQUEST_LEAVE
+        $Text:
+          - We will meet again Traveler, in a different song.
+        IsAlien: true
+        MarkInteractionComplete: true
+        KeepOpen: false
+        Rewards:
+          - <%= Atlas.Reward('END') %>
+
+  - Id: <%= Atlas.Dialog('FLEET1') %>
+    TranslationBrackets: true
+    AdvancedInteractionFlow:
+      - Text: <%= Atlas.LocKey('PROMPT') %>
+        IsAlien: true
+        AudioEvent: FRIGATE_LIVING_TALK
+    Options:
+      - $Name: Discovery
+        Text: UI_FIRST_BIOFRIG_DREAM_EXP
+        IsAlien: true
+        MarkInteractionComplete: true
+        Rewards:
+          - R_BIOFRIG_C_EXP
+          - <%= Atlas.Reward('END') %>
+
+      - $Name: Valor
+        Text: UI_FIRST_BIOFRIG_DREAM_ATT
+        IsAlien: true
+        MarkInteractionComplete: true
+        Rewards:
+          - R_BIOFRIG_C_ATT
+          - <%= Atlas.Reward('END') %>
+
+      - $Name: Effeciency
+        Text: UI_FIRST_BIOFRIG_DREAM_FUE
+        IsAlien: true
+        MarkInteractionComplete: true
+        Rewards:
+          - R_BIOFRIG_C_FUE
+          - <%= Atlas.Reward('END') %>
+
+      - Name: <%= Atlas.Mod.LocKey('MENU_NEXT_OPT') %>
+        MarkInteractionComplete: false
+        KeepOpen: true
+        NextInteraction: <%= Atlas.Dialog('FLEET2') %>
+        SelectedOnBackOut: true
+
+  - Id: <%= Atlas.Dialog('FLEET2') %>
+    TranslationBrackets: true
+    AdvancedInteractionFlow:
+      - Text: <%= Atlas.LocKey('PROMPT') %>
+        IsAlien: true
+        AudioEvent: FRIGATE_LIVING_TALK
+    Options:
+      - $Name: Industry
+        Text: UI_FIRST_BIOFRIG_DREAM_IND
+        IsAlien: true
+        MarkInteractionComplete: true
+        Rewards:
+          - R_BIOFRIG_C_IND
+          - <%= Atlas.Reward('END') %>
+
+      - $Name: Commerce
+        Text: UI_FIRST_BIOFRIG_DREAM_TRA
+        IsAlien: true
+        MarkInteractionComplete: true
+        Rewards:
+          - R_BIOFRIG_C_TRA
+          - <%= Atlas.Reward('END') %>
+
+      - $Name: Celerity
+        Text: UI_FIRST_BIOFRIG_DREAM_SPE
+        IsAlien: true
+        MarkInteractionComplete: true
+        Rewards:
+          - R_BIOFRIG_C_SPE
+          - <%= Atlas.Reward('END') %>
+
+      - Name: <%= Atlas.Mod.LocKey('MENU_BACK_OPT') %>
+        MarkInteractionComplete: false
+        KeepOpen: true
+        NextInteraction: <%= Atlas.Dialog(`GIFT`) %>
+        SelectedOnBackOut: true
+
+  - Id: <%= Atlas.Dialog('FLEETR') %>
+    TranslationBrackets: true
+    AdvancedInteractionFlow:
+      - Text: UI_FIRST_BIOFRIG_RES_A
+        AudioEvent: FRIGATE_LIVING_TALK
+        IsAlien: true
+      - Text: UI_FIRST_BIOFRIG_RES_C
+        AudioEvent: FRIGATE_LIVING_TALK
+        IsAlien: true
+    Options:
+      - $Name: Accept knowledge
+        Text: <%= Atlas.LocKey('TECH_RES') %>
+        IsAlien: true
+        Rewards:
+          - R_FREI_TECH
+          - <%= Atlas.Reward('END') %>
+
+      - Name: <%= Atlas.Mod.LocKey('MENU_BACK_OPT') %>
+        MarkInteractionComplete: false
+        KeepOpen: true
+        NextInteraction: <%= Atlas.Dialog(`GIFT`) %>
+        SelectedOnBackOut: true
+
+  - Id: <%= Atlas.Dialog('SHIP') %>
+    TranslationBrackets: true
+    AdvancedInteractionFlow:
+      - Text: UI_HAIL_BIOFRIG_DESC_2
+        AudioEvent: FRIGATE_LIVING_TALK
+      - $Text:
+          - The ~ <TITLE>[unintelligible]<> ~ are bound to metal masters no longer. Do you wish to join in their song?
+        IsAlien: true
+        AudioEvent: FRIGATE_LIVING_TALK
+
+    Options:
+      # have NOT completed the living ship quest
+      - $Name: Adopt void egg
+        MarkInteractionComplete: true
+        Text: <%= Atlas.LocKey('SHIP_RES') %>
+        IsAlien: true
+        EnablingConditionTest: AnyTrue
+        EnablingConditions:
+          - $: GcMissionConditionMissionCompleted
+            MissionID: BIO_SHIP5
+        Rewards:
+          - Id: <%= Atlas.Reward('EGG') %>
+            List:
+              - $: GcRewardSpecificProduct
+                ID: ODD_EGG
+                AmountMin: 1
+                AmountMax: 1
+                ForceSpecialMessage: true
+          - <%= Atlas.Reward('END') %>
+
+      # DID complete the living ship quest
+      - $Name: Locate fallen host
+        MarkInteractionComplete: true
+        Text: <%= Atlas.LocKey('SHIP_RES') %>
+        IsAlien: true
+        EnablingConditionTest: AnyFalse
+        EnablingConditions:
+          - $: GcMissionConditionMissionCompleted
+            MissionID: BIO_SHIP5
+          - $: GcMissionConditionGroup
+            ConditionTest: AnyTrue
+            Conditions:
+              - $: GcMissionConditionIsMissionInProgress
+                MissionID: BIOSHIP_REPEAT
+        Rewards:
+          - R_BIOSHIPL
+          - <%= Atlas.Reward('END') %>
+
+      # only available if you have completed the bioship mission
+      - $Name: Assistance nurturing a starship
+        Text: <%= Atlas.LocKey('TECH_RES') %>
+        IsAlien: true
+        MarkInteractionComplete: true
+        EnablingConditionTest: AnyFalse
+        EnablingConditions:
+          - $: GcMissionConditionMissionCompleted
+            MissionID: BIO_SHIP5
+        Rewards:
+          - Id: <%= Atlas.Reward('BIOLOOT') %>
+            List:
+              - $: GcRewardSpecificProduct
+                ID: ALIEN_INV_TOKEN
+                AmountMin: 1
+                AmountMax: 2
+              - $: GcRewardSpecificProduct
+                ID: ALIEN_TECHBOX
+                AmountMin: 2
+                AmountMax: 3
+          - <%= Atlas.Reward('END') %>
+
+      - Name: <%= Atlas.Mod.LocKey('MENU_BACK_OPT') %>
+        MarkInteractionComplete: false
+        KeepOpen: true
+        NextInteraction: <%= Atlas.Dialog(`GIFT`) %>
+        SelectedOnBackOut: true

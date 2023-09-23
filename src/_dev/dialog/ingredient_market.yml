@@ -1,0 +1,122 @@
+# <% const Market = Atlas.Config.IngredientMarket; %>
+# <% const Inventory = Market.Inventory; %>
+# <% const Pricing = Market.Pricing; %>
+
+Dialog:
+  - Id: <%= Atlas.Dialog('IM') %>
+    $Text: Player buying or selling?
+    Options:
+      - $Name: Buying...
+        NextInteraction: <%= Atlas.Dialog('IM_B') %>
+
+      - $Name: Selling...
+        NextInteraction: <%= Atlas.Dialog('IM_S') %>
+
+      - Name: <%= Atlas.Mod.LocKey('MENU_BACK_OPT') %>
+        SelectedOnBackOut: true
+        NextInteraction: <%= Atlas.Dialog('MENU') %>
+
+  - Id: <%= Atlas.Dialog('IM_S') %>
+    $Text: Set player sellable target by category.
+    Options:
+      # <% ;['Creature', 'Meat', 'Plant'].forEach((category) => { %>
+      # <% const key = Pricing[category].Key; %>
+      - $Name: <%= category %>
+        MarkInteractionComplete: false
+        KeepOpen: true
+        NextInteraction: <%= Atlas.Dialog(`${key}_S1`) %>
+      # <% }); %>
+
+      - Name: <%= Atlas.Mod.LocKey('MENU_BACK_OPT') %>
+        MarkInteractionComplete: false
+        KeepOpen: true
+        SelectedOnBackOut: true
+        NextInteraction: <%= Atlas.Dialog('IM') %>
+
+  # <% ;['Creature', 'Meat', 'Plant'].forEach((category) => { %>
+  # <% const key = Pricing[category].Key; %>
+  # <% Atlas.Tools.Paginate(Object.keys(Market[category]), 3, (items, p, t) => { %>
+  - Id: <%= Atlas.Dialog(`${key}_S${p}`) %>
+    $Text: <%= category %>, will also give required for one sell cycle
+    Options:
+      # <% items.forEach((productKey) => { %>
+      # <% const prod = Market[category][productKey]; %>
+      - Name: <%= prod.NameLower %>
+        MarkInteractionComplete: true
+        Rewards:
+          - Id: <%= Atlas.Reward(`${key}${prod.Index}S`) %>
+            List:
+              - $: GcRewardSpecificProduct
+                ID: <%= productKey %>
+                AmountMin: <%= Inventory.SellCount %>
+                AmountMax: <%= Inventory.SellCount %>
+              - $: GcRewardModifyStat
+                Stat: <%= Atlas.Mod.Stat(`${key}_S`) %>
+                Amount: <%= prod.Index %>
+                ModifyType: Set
+      # <% }); %>
+
+      # <% if (p === t) { %>
+      - Name: <%= Atlas.Mod.LocKey('MENU_BACK_OPT') %>
+        KeepOpen: true
+        NextInteraction: <%= Atlas.Dialog('IM_S') %>
+        SelectedOnBackOut: true
+      # <% } else { %>
+      - Name: <%= Atlas.Mod.LocKey('MENU_NEXT_OPT') %>
+        KeepOpen: true
+        NextInteraction: <%= Atlas.Dialog(`${key}_S${p + 1}`) %>
+        SelectedOnBackOut: true
+      # <% } %>
+  # <% }); %>
+  # <% }); %>
+
+  - Id: <%= Atlas.Dialog('IM_B') %>
+    $Text: Set player buyable target by category.
+    Options:
+      # <% ;['Creature', 'Meat', 'Plant'].forEach((category) => { %>
+      # <% const key = Pricing[category].Key; %>
+      - $Name: <%= category %>
+        NextInteraction: <%= Atlas.Dialog(`${key}_B1`) %>
+      # <% }); %>
+
+      - Name: <%= Atlas.Mod.LocKey('MENU_BACK_OPT') %>
+        SelectedOnBackOut: true
+        NextInteraction: <%= Atlas.Dialog('IM') %>
+
+  # <% ;['Creature', 'Meat', 'Plant'].forEach((category) => { %>
+  # <% const key = Pricing[category].Key; %>
+  # <% Atlas.Tools.Paginate(Object.keys(Market[category]), 3, (items, p, t) => { %>
+  - Id: <%= Atlas.Dialog(`${key}_B${p}`) %>
+    $Text: <%= category %>
+    Options:
+      # <% items.forEach((productKey) => { %>
+      # <% const prod = Market[category][productKey]; %>
+      - Name: <%= prod.NameLower %>
+        MarkInteractionComplete: true
+        KeepOpen: false
+        Rewards:
+          - Id: <%= Atlas.Reward(`${key}${prod.Index}B`) %>
+            List:
+              - $: GcRewardMoney
+                AmountMin: 1000
+                AmountMax: 1000
+                Currency: Nanites
+              - $: GcRewardModifyStat
+                Stat: <%= Atlas.Mod.Stat(`${key}_B`) %>
+                Amount: <%= prod.Index %>
+                ModifyType: Set
+      # <% }); %>
+
+      # <% if (p === t) { %>
+      - Name: <%= Atlas.Mod.LocKey('MENU_BACK_OPT') %>
+        KeepOpen: true
+        NextInteraction: <%= Atlas.Dialog('IM_B') %>
+        SelectedOnBackOut: true
+      # <% } else { %>
+      - Name: <%= Atlas.Mod.LocKey('MENU_NEXT_OPT') %>
+        KeepOpen: true
+        NextInteraction: <%= Atlas.Dialog(`${key}_B${p + 1}`) %>
+        SelectedOnBackOut: true
+      # <% } %>
+  # <% }); %>
+  # <% }); %>

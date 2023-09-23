@@ -1,0 +1,127 @@
+# <% const Exchange = Atlas.Config.DailyProductExchange; %>
+
+Include:
+  - ./dialog/home.yml
+  - ./dialog/ingredient_market.yml
+  - ./dialog/whalesong.yml
+
+LanguageKeys:
+  <%= Atlas.LocKey('WHALE_OPT') %>: Ask about whalesong...
+  <%= Atlas.LocKey('DAILY_CHANGE') %>: |
+    <TITLE>The Daily Favorite and Ingredient Market have changed<>
+    Visit Cronus to learn today's specials
+
+ScanEvents:
+  - Name: <%= Atlas.ScanEvent(`ICO`) %>
+    ForceInteraction: <%= Atlas.Dialog(`HOME`) %>
+    ForceInteractionType: ExoticExtra6
+    ForceRestartInteraction: true
+    ForceOverridesAll: true
+    AlwaysShow: true
+    ClearForcedInteractionOnCompletion: true
+    DisableMultiplayerSync: true
+    EventStartType: Special
+    EventEndType: Interact
+    EventPriority: Regular
+    AllowOverriddenBuildings: true
+    BuildingLocation: Nearest
+    BuildingType: Nexus
+    MarkerLabel: <%= Atlas.Mod.LocKey('JOB_UI_TITLE_PREFIX') %>
+    MarkerIcon: TEXTURES/UI/HUD/ICONS/MISSIONS/MISSION.ANOMALYSTATION.DDS
+
+  - Name: <%= Atlas.ScanEvent(`HOME`) %>
+    ForceInteraction: <%= Atlas.Dialog(`HOME`) %>
+    ForceInteractionType: ExoticExtra6
+    ForceRestartInteraction: true
+    ForceOverridesAll: true
+    NeverShow: true
+    ClearForcedInteractionOnCompletion: true
+    DisableMultiplayerSync: true
+    EventStartType: Special
+    EventEndType: Interact
+    EventPriority: Regular
+    AllowOverriddenBuildings: true
+    BuildingLocation: Nearest
+    BuildingType: Nexus
+
+Mission:
+  $Table: EnablingConditionsTable
+  MissionID: <%= Atlas.Metadata.Name %>
+  MissionClass: Guide
+  AutoStart: AllModes
+
+  StartIsCancel: true
+  StartConditionTest: AnyFalse # if any false, this mission will NOT be active
+  StartingConditions:
+    # in the nexus
+    - $: GcMissionConditionLocation
+      MissionPlayerLocation: InNexusOnFoot
+
+    # tutorial completed
+    # - $: GcMissionConditionStatLevel
+    #   Stat: <%= Atlas.Mod.Stat('TUT') %>
+    #   Level: 1
+    #   Test: Equal
+
+    # product offering enabled
+    - $: GcMissionConditionStatLevel
+      Stat: <%= Atlas.Mod.Stat('POE') %>
+      Level: 1
+      Test: Equal
+
+  Stages:
+    - $: GcMissionSequenceGroup
+      Silent: true
+      RepeatLogic: Loop
+      Stages:
+        # first time today entrance sequence
+        - $: GcMissionSequenceGroup
+          Silent: true
+          RepeatLogic: Loop
+          ConditionTest: AnyTrue
+          Conditions:
+            - $: GcMissionConditionStatLevel
+              Stat: <%= Atlas.Mod.Stat('CDH') %>
+              Level: 1
+              Test: Equal
+          Stages:
+            - $: GcMissionSequenceStartScanEvent
+              Event: <%= Atlas.ScanEvent(`ICO`) %>
+
+            - $: GcMissionSequenceGroup
+              Silent: true
+              RepeatLogic: Loop
+              PrefixTitle: true
+              PrefixTitleText: <%= Atlas.Mod.LocKey('JOB_UI_TITLE_PREFIX') %>
+              HasCategoryOverride: true
+              OverrideCategory: Urgent
+              Icon: TEXTURES/UI/HUD/ICONS/MISSIONS/MISSION.WHEAT.DDS
+              Stages:
+                - $: GcMissionSequenceShowMessage
+                  Message: <%= Atlas.LocKey('DAILY_CHANGE') %>
+                  Category: Urgent
+                  Time: 8
+                  OSDTime: 0
+
+                - $: GcMissionSequenceWait
+                  Time: 35
+
+        # end scan event if received talked to event
+        - $: GcMissionSequenceEndScanEvent
+          Event: <%= Atlas.ScanEvent(`ICO`) %>
+
+        - $: GcMissionSequenceGroup
+          Silent: true
+          RepeatLogic: Loop
+          ConditionTest: AnyTrue
+          Conditions:
+            - $: GcMissionConditionStatLevel
+              Stat: <%= Atlas.Mod.Stat('CDH') %>
+              Level: 0
+              Test: Equal
+          Stages:
+            - $: GcMissionSequenceStartScanEvent
+              Event: <%= Atlas.ScanEvent(`HOME`) %>
+
+            # wait forever
+            - $: GcMissionSequenceStop

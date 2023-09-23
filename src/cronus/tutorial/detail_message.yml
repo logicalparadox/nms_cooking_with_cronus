@@ -1,0 +1,61 @@
+LanguageKeys:
+  <%= Atlas.LocKey('INTRO_DESC') %>: >
+    <HIGHLIGHT>Iteration Cronus<> has expanded their offerings for Travelers visiting the Nexus! Fair 
+    compensation and competitive prices for all your cuisine preparation needs.
+  <%= Atlas.LocKey('INTRO_P1') %>: >
+    Cronus is now willing to pay a premium for some of their <SPECIAL>favorite dishes<> 
+    but what they are in the mood for changes daily.
+  <%= Atlas.LocKey('INTRO_P2') %>: >
+    Through the <TRADE>Ingredients Market<>, Cronus allows Travelers to sell their 
+    excess farm and harvest products. Ingredient selection changes daily.
+  <%= Atlas.LocKey('INTRO_P3') %>: >
+    Cronus has been tracking migratory fleets of <SPECIAL>cosmic megafauna<>. Speak with them
+    about whalesong once the <TECHNOLOGY>Dream Aerial<> mission has been completed.
+
+Mission:
+  $Table: CoreMissionTable
+  $AutoStageVersions: true
+  MissionID: <%= Atlas.Metadata.Name %>
+  MissionClass: Guide
+
+  Rewards:
+    - Id: <%= Atlas.Reward('COOK') %>
+      List:
+        # give free cooker
+        - $: GcRewardSpecificProduct
+          ID: COOKER
+          AmountMin: 1
+          AmountMax: 1
+          HideAmountInMessage: true
+
+        # teach cooker
+        - $: GcRewardSpecificProductRecipe
+          ID: COOKER
+
+  Stages:
+    # Use the lore stat to determine if we want to reward a cooker to the player.
+    # Doing this here as product rewards can prevent dialog screen from closing
+    # if the players inventory is full.
+    - $: GcMissionSequenceGroup
+      Silent: true
+      ConditionTest: AnyFalse
+      Conditions:
+        - $: GcMissionConditionStatLevel
+          Stat: <%= Atlas.Mod.Stat('LORE') %>
+          Level: <%= Atlas.Config.StoryProgress.PostIntro %>
+          Test: Equal
+      Stages:
+        - $: GcMissionSequenceReward
+          Reward: <%= Atlas.Reward('COOK') %>
+        - $: GcMissionSequenceWait
+          Time: 1
+
+    # show non-dialog-flavor tutorial
+    - $: GcMissionSequenceDetailMessage
+      Title: <%= Atlas.Config.LangRef.ChefName %>
+      Description: <%= Atlas.LocKey('INTRO_DESC') %>
+      Image: NEXUS_DETAIL
+      Points:
+        - Text: <%= Atlas.LocKey('INTRO_P1') %>
+        - Text: <%= Atlas.LocKey('INTRO_P2') %>
+        - Text: <%= Atlas.LocKey('INTRO_P3') %>

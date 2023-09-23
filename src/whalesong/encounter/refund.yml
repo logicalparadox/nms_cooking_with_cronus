@@ -1,0 +1,37 @@
+Mission:
+  $Table: SpacePOIMissionTable
+  MissionID: <%= Atlas.Metadata.Name %>
+  MissionClass: Guide
+
+  AutoStart: AllModes
+  RestartOnCompletion: true
+  StartIsCancel: true
+
+  StartConditionTest: AnyFalse
+  StartingConditions:
+    - $: GcMissionConditionGroup
+      ConditionTest: AllFalse
+      Conditions:
+        - $: GcMissionConditionHasProduct
+          Product: <%= Atlas.Mod.Product("SONG_X") %>
+          Amount: 1
+    - $: GcMissionConditionGroup
+      ConditionTest: AnyTrue
+      Conditions:
+        - $: GcMissionConditionIsMissionInProgress
+          MissionID: <%= Atlas.Config.MissionRef.Whalesong %>
+
+  Rewards:
+    - Id: <%= Atlas.Reward("SWAP") %>
+      RewardChoice: GiveAllSilent
+      List:
+        - $: GcRewardExchangeProduct
+          IDToGive: <%= Atlas.Mod.Product("SONG") %>
+          IDToTake: <%= Atlas.Mod.Product("SONG_X") %>
+          HideNewProduct: true
+
+  Stages:
+    - $: GcMissionSequenceWait
+      Time: 2
+    - $: GcMissionSequenceReward
+      Reward: <%= Atlas.Reward("SWAP") %>

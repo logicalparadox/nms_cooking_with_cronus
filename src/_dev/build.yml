@@ -1,0 +1,8 @@
+# <% if (Atlas.Config.EnableDebug) { %>
+Build:
+  - $: IncludeMission
+    Source: ./debug_mission.yml
+    Metadata:
+      Name: ALCH_CHEF_DEBUG
+      ID: CHEFDEV
+# <% } %>

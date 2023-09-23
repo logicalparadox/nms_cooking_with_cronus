@@ -1,0 +1,161 @@
+StatDefinitions:
+  - Id: <%= Atlas.Mod.Stat('WS_TUT') %>
+    TrackType: Set
+
+Dialog:
+  - Id: <%= Atlas.Dialog('WS_BUY') %>
+    TranslationBrackets: true
+    $TextAlien:
+      - The universe has many more secrets to uncover. Shall we attune to the song in it's memories once more?
+    Options:
+      - $Name: Create an Offering
+        $Text:
+          - You tell Cronus a story from your travels amung the sea of stars. Before long, a familiar chorus drifts through the market stall.
+        IsAlien: false
+        MarkInteractionComplete: false
+        KeepOpen: false
+        Cost:
+          Id: <%= Atlas.Cost('WS_BUY') %>
+          Cost:
+            $: GcCostMoney
+            Cost: 1000
+            CostCurrency: Nanites
+        Rewards:
+          - <%= Atlas.Mod.Reward('VISIT') %>
+          - Id: <%= Atlas.Reward('WS') %>
+            List:
+              - $: GcRewardSpecificProduct
+                ID: <%= Atlas.Mod.Product("SONG") %>
+                AmountMin: 1
+                AmountMax: 1
+                HideAmountInMessage: true
+                ForceSpecialMessage: true
+      - $Name: Acquire Recipe
+        $Text:
+          - I will miss the stories, but I cannot stand in the way of your discovery. Here you are my friend, please help the universe remember.
+        IsAlien: true
+        MarkInteractionComplete: false
+        KeepOpen: false
+        EnablingConditionTest: AnyTrue
+        EnablingConditions:
+          - $: GcMissionConditionProductKnown
+            Product: <%= Atlas.Mod.Product("SONG") %>
+        Cost:
+          Id: <%= Atlas.Cost('WS_REC') %>
+          Cost:
+            $: GcCostMoney
+            Cost: 10000
+            CostCurrency: Nanites
+        Rewards:
+          - <%= Atlas.Mod.Reward('VISIT') %>
+          - Id: <%= Atlas.Reward('WS_REC') %>
+            List:
+              - $: GcRewardSpecificProductRecipe
+                ID: <%= Atlas.Mod.Product("SONG") %>
+
+      - Name: <%= Atlas.Mod.LocKey('MENU_BACK_OPT') %>
+        MarkInteractionComplete: false
+        KeepOpen: true
+        NextInteraction: <%= Atlas.Dialog(`PAGE2`) %>
+        SelectedOnBackOut: true
+
+  - Id: <%= Atlas.Dialog('WS_TUT1') %>
+    TranslationBrackets: true
+    Prop: HoloSolarSystem
+    AdvancedInteractionFlow:
+      - $Text:
+          - What a fascinating topic! Yes, it appears that cosmic megafauna are now migrating through the galaxy.
+          - These are just rumors though, or perhaps you have seen them?
+        IsAlien: true
+        Mood: Positive
+      - $Text: Cronus searches for a sign of recognition in your expression.
+        IsAlien: false
+        Mood: Confused
+      - $Text:
+          - You HAVE seen them! What fortuitus circumstances we find ourselves in.
+          - I theorize that within the wake of these cosmic beings are memories, lost even to them.
+          - If we could attune to these memories, it would capture the attention of a nearby migratory fleet.
+        IsAlien: true
+        Mood: Positive
+    Options:
+      - $Name: Please, continue...
+        MarkInteractionComplete: false
+        KeepOpen: true
+        NextInteraction: <%= Atlas.Dialog('WS_TUT2') %>
+
+  - Id: <%= Atlas.Dialog('WS_TUT2') %>
+    TranslationBrackets: true
+    Prop: None
+    AdvancedInteractionFlow:
+      - $Text: Reassured they have your full attention, they continue.
+        IsAlien: false
+      - $Text:
+          - Now, a scientist would have you construct all sorts of instrumentation and devices. Discordant and cold things that would only alienate, not invite.
+          - These are living creatures and if we wish to make new friends, that is always best done over the finest of foods.
+          - I will prepare a dessert! One of such magnificence that it will sing of all that the stars have seen.
+        IsAlien: true
+        Mood: VeryPositive
+      - $Text:
+          - Cronus stops in full crescendo and looks in the direction of the other Nexus denizens.
+          - Statisfied no others caught this moment of untethered excitement, Cronus continues in a whisper.
+        Mood: Confused
+      - $Text:
+          - And you, Traveler, will carry it beyond the Nexus to whomever comes seeking it's call.
+          - But you must promise to return and tell me what secrets this galaxy has forgotten.
+        IsAlien: true
+        Mood: Positive
+    Options:
+      - $Name: Agree to this task...
+        $Text:
+          - Wonderous! Simply wonderous! Now, if only I could remember where I put...
+        IsAlien: true
+        Mood: VeryPositive
+        Prop: None
+        MarkInteractionComplete: false
+        KeepOpen: true
+        NextInteraction: <%= Atlas.Dialog('WS_TUT3') %>
+
+  - Id: <%= Atlas.Dialog('WS_TUT3') %>
+    Prop: None
+    TranslationBrackets: true
+    AdvancedInteractionFlow:
+      - $Text:
+          - The Chef's voice trails off as they pull seemingly random food items from crates scattered throughout the market stall.
+          - You try to make note of the recipe but Cronus never measures a single ingredient as they weave from one <TECHNOLOGY>Nutrient Processor<> to the next.
+          - Finally, placed before you is a gently-baked <SPECIAL>meringue<>, a bowl of <SPECIAL>custard<>, and small dish of <SPECIAL>jam<> that changes color whenever you look away.
+        Mood: Positive
+      - $Text:
+          - The <TECHNOLOGY>Nutrient Processors<> would get this last part wrong. Each <SPECIAL>offering<> is different...
+          - It wants to sing, and you must help it find it's voice.
+        IsAlien: true
+        Mood: Pity
+      - $Text:
+          - As Cronus sculpts the <SPECIAL>offering's<> final form, a hum begins to resonates from the dessert before you.
+          - The hum becomes a voice, then the voice becomes a chorus. Barely audible but always present.
+          - You wonder if you have you heard this song before.
+        IsAlien: false
+        Mood: Positive
+        AudioEvent: FRIGATE_LIVING_TALK
+      - $Text:
+          - There you go, my friend! I can modestly say that it is one of my finest desserts yet.
+          - Now, if you would be so kind, it would like to <SPECIAL>harmonize<> with the stars.
+        IsAlien: true
+        Mood: VeryPositive
+    Options:
+      - $Name: Prepare offering for transport
+        MarkInteractionComplete: false
+        KeepOpen: false
+        Rewards:
+          - <%= Atlas.Mod.Reward('VISIT') %>
+          - Id: <%= Atlas.Reward('WS_TUT') %>
+            List:
+              - $: GcRewardModifyStat
+                Stat: <%= Atlas.Mod.Stat('WS_TUT') %>
+                Amount: 1
+                ModifyType: Set
+              - $: GcRewardModifyStat
+                Stat: <%= Atlas.Mod.Stat('LORE') %>
+                Amount: <%= Atlas.Config.StoryProgress.WhalesongPrepared %>
+                ModifyType: Set
+              - $: GcRewardMission
+                Mission: <%= Atlas.Config.MissionRef.FirstOffering %>

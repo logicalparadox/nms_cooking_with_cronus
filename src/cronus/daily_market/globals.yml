@@ -1,0 +1,53 @@
+StatusMessageDefinitions:
+  - Id: <%= Atlas.Mod.Prefix('DEBUG') %>
+    DisplayDurationMultiplier: 0.1
+  - Id: <%= Atlas.Mod.Prefix('CHAT') %>
+    DisplayDurationMultiplier: 0.25
+
+StatDefinitions:
+  # Tutorial Completed?
+  - Id: <%= Atlas.Mod.Stat('TUT') %>
+    TrackType: Set
+
+  # Product Offering Enabled
+  - Id: <%= Atlas.Mod.Stat('POE') %>
+    TrackType: Set
+
+  # Active Product Index
+  - Id: <%= Atlas.Mod.Stat('API') %>
+    TrackType: Set
+
+  # Seen today's menu - "chef daily hello"
+  - Id: <%= Atlas.Mod.Stat('CDH') %>
+    TrackType: Set
+
+  # <% Object.values(Atlas.Config.IngredientMarket.Pricing).forEach((spec) => { %>
+  - Id: <%= Atlas.Mod.Stat(`${spec.Key}_B`) %>
+    TrackType: Set
+  - Id: <%= Atlas.Mod.Stat(`${spec.Key}_C`) %>
+    TrackType: Set
+  - Id: <%= Atlas.Mod.Stat(`${spec.Key}_S`) %>
+    TrackType: Set
+  # <% }); %>
+
+  # ingredient market - economy modifier
+  - Id: <%= Atlas.Mod.Stat('ECO_B') %>
+    TrackType: Set
+  - Id: <%= Atlas.Mod.Stat('ECO_S') %>
+    TrackType: Set
+
+Rewards:
+  # trigger a reboot
+  - Id: <%= Atlas.Mod.Reward('RESET') %>
+    # OverrideZeroSeed: true
+    List:
+      - $: GcRewardMissionSeeded
+        Mission: <%= Atlas.Config.MissionRef.DailyReset %>
+
+  # on end visit to cronus
+  - Id: <%= Atlas.Mod.Reward('VISIT') %>
+    List:
+      - $: GcRewardModifyStat
+        Stat: <%= Atlas.Mod.Stat('CDH') %>
+        Amount: 1
+        ModifyType: Set

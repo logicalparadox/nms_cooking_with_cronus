@@ -1,0 +1,64 @@
+Mod:
+  Author: alchemist
+  Name: CookingWithCronus
+  Version: 1.3.1
+  Description: |
+    An interaction overhaul of Iteration Cronus that includes new culinary
+    profit opportunities, a dynamic ingredients market, and expanded 
+    whalesong encounters.
+
+    https://www.nexusmods.com/nomanssky/mods/2554
+  Language: English
+  Metadata:
+    Name: ALCH_CHEF
+    ID: CHEF
+  Templates:
+    ModLuaFooters:
+      - templates/mod.footer.lua
+
+ConfigSources:
+  - ./src/config/rewards.yml
+  - ./src/config/daily_product_exchange.yml
+  - ./src/config/ingredient_market.yml
+  - ./src/config/ingredient_market_pricing.yml
+  - ./src/config/daily_menu_matrix.yml
+
+Config:
+  EnableDebug: false
+  MissionRef:
+    DailyReset: ALCH_CHEF_RESET
+    ChefIntro: ALCH_CHEF_INTRO
+    WaitOnJudgement: ALCH_CHEF_JUDGE
+    FirstOffering: ALCH_CHEF_OFFER
+    TutorialDone: ALCH_CHEF_TDONE
+    Whalesong: ALCH_CHEF_WHALE
+  LangRef:
+    ChefName: UI_TIP_VYK_HEAD_FROG
+  StoryProgress:
+    PreIntro: -1
+    PostIntro: 4
+    WhalesongPrepared: 6
+    WhalesongComplete: 8
+    WhalesongReturn: 11
+    WhalesongRecipe: 12
+
+Build:
+  # debug mission (toggle with EnableDebug config)
+  - $: IncludeBuildFile
+    Source: ./src/_dev/build.yml
+
+  # some general purpose dialog
+  - $: IncludeGeneric
+    Source: ./src/tables/language.yml
+
+  # the story/lore entries
+  - $: IncludeGeneric
+    Source: ./src/tables/story.yml
+
+  # cronus daily menu, missions, and controllers
+  - $: IncludeBuildFile
+    Source: ./src/cronus/build.yml
+
+  # whalesong tutorial, encounter, and products
+  - $: IncludeBuildFile
+    Source: ./src/whalesong/build.yml
